@@ -1,3 +1,5 @@
+namespace TFG_BACK.Models;
+
 public class UsuarioAsignatura
 {
     public int IdUsuario { get; set; }

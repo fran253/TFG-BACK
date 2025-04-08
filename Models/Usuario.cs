@@ -1,3 +1,5 @@
+namespace TFG_BACK.Models;
+
 public class Usuario
 {
     public int IdUsuario { get; set; }
@@ -12,12 +14,7 @@ public class Usuario
     public int IdPreferencia { get; set; }
     public Preferencias Preferencias { get; set; }
 
-    public int IdAsignatura { get; set; }
-    public Asignatura Asignatura { get; set; }
-
     public int IdSeguimiento { get; set; }
     public Seguimiento Seguimiento { get; set; }
 
-    public ICollection<Quiz> Quizzes { get; set; }
-    public ICollection<Video> Videos { get; set; }
 }

@@ -1,3 +1,5 @@
+namespace TFG_BACK.Models;
+
 public class Seguimiento
 {
     public int IdSeguimiento { get; set; }
