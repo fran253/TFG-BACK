@@ -1,3 +1,4 @@
+namespace TFG_BACK.Models;
 public class Preferencias
 {
     public int IdPreferencia { get; set; }

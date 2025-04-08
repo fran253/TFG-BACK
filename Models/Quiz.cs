@@ -1,3 +1,4 @@
+namespace TFG_BACK.Models;
 public class Quiz
 {
     public int IdQuizz { get; set; }

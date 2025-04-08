@@ -1,3 +1,4 @@
+namespace TFG_BACK.Models;
 public class Rol
 {
     public int IdRol { get; set; }
