@@ -2,7 +2,7 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using TFG_BACK.Controllers;
 using TFG_BACK.Repositories;
-using TFG_BACK.Service;
+using TFG_BACK.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -83,7 +83,17 @@ builder.Services.AddScoped<IVideoRepository, VideoRepository>(provider =>
 
 
 // SERVICE
-//PONER SERVICE AQUI
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IUsuarioAsignaturaService, UsuarioAsignaturaService>();
+builder.Services.AddScoped<IAsignaturaService, AsignaturaService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
+builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddScoped<IDetalleQuizzService, DetalleQuizzService>();
+builder.Services.AddScoped<IPreferenciasService, PreferenciasService>();
+builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
+
+
 
 // Add services to the container.
 builder.Services.AddControllers(options =>
