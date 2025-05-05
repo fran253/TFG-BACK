@@ -1,0 +1,6 @@
+@TFG_BACK_HostAddress = http://localhost:5190
+
+GET {{TFG_BACK_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
