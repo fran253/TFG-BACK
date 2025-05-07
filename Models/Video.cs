@@ -1,6 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+<<<<<<< HEAD
 using System.Text.Json.Serialization;
+=======
+>>>>>>> 80ab0711d3b5cb08e81a76ee11431b31e2e0bac9
 
 public class Video
 {

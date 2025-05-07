@@ -40,19 +40,6 @@ public class VideoService : IVideoService
     {
         return await _context.Videos
             .Where(v => v.IdUsuario == idUsuario)
-            .Include(v => v.Asignatura)
-            .Include(v => v.Usuario)
-            .ToListAsync();
-    }
-
-    // Nuevo método para obtener videos por curso
-    public async Task<List<Video>> GetByCursoAsync(int idCurso)
-    {
-        return await _context.Videos
-            .Where(v => v.IdCurso == idCurso)
-            .Include(v => v.Asignatura)
-            .Include(v => v.Usuario)
-            .Include(v => v.Curso)
             .ToListAsync();
     }
 

@@ -80,13 +80,6 @@ builder.Services.AddSwaggerGen();
 // ---------------------------- Construcción del app ----------------------------
 var app = builder.Build();
 
-// Crear la base de datos si no existe
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AcademIQDbContext>();
-    dbContext.Database.EnsureCreated();
-}
-
 app.UseSwagger();
 app.UseSwaggerUI();
 

@@ -47,15 +47,6 @@ public class VideoController : ControllerBase
         return Ok(lista);
     }
 
-    // Nuevo endpoint para obtener videos por curso
-    // GET: api/video/curso/{idCurso}
-    [HttpGet("curso/{idCurso}")]
-    public async Task<ActionResult<List<Video>>> GetByCurso(int idCurso)
-    {
-        var lista = await _videoService.GetByCursoAsync(idCurso);
-        return Ok(lista);
-    }
-
     // POST: api/video
     [HttpPost]
     public async Task<ActionResult> Crear([FromBody] Video video)

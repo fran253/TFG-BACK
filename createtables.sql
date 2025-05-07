@@ -15,6 +15,7 @@ CREATE TABLE Preferencias (
 -- Usuarios
 CREATE TABLE Usuario (
     idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+    avatar TEXT,
     nombre VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100),
     gmail VARCHAR(255) UNIQUE NOT NULL,
@@ -148,3 +149,17 @@ CREATE TABLE ResultadoQuiz (
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
     FOREIGN KEY (idQuiz) REFERENCES Quiz(idQuiz) ON DELETE CASCADE
 );
+<<<<<<< HEAD
+=======
+
+-- Historial de videos para los usuarios
+CREATE TABLE HistorialVideo (
+    idHistorial INT PRIMARY KEY AUTO_INCREMENT,
+    idUsuario INT NOT NULL,
+    idVideo INT NOT NULL,
+    fechaVisualizacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (idVideo) REFERENCES Video(idVideo) ON DELETE CASCADE
+);
+
+>>>>>>> 80ab0711d3b5cb08e81a76ee11431b31e2e0bac9
