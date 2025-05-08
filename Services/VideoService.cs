@@ -27,6 +27,16 @@ public class VideoService : IVideoService
             .FirstOrDefaultAsync(v => v.IdVideo == id);
     }
 
+public async Task<List<Video>> GetByCursoAsync(int idCurso)
+    {
+        return await _context.Videos
+            .Where(v => v.IdCurso == idCurso)
+            .Include(v => v.Asignatura)
+            .Include(v => v.Usuario)
+            .Include(v => v.Curso)
+            .ToListAsync();
+    }
+
     public async Task<List<Video>> GetByAsignaturaAsync(int idAsignatura)
     {
         return await _context.Videos
