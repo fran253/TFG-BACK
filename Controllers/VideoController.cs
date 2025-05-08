@@ -54,6 +54,22 @@ public class VideoController : ControllerBase
         await _videoService.AddAsync(video);
         return CreatedAtAction(nameof(GetById), new { id = video.IdVideo }, video);
     }
+    
+    // GET: api/video/curso/{idCurso}
+    [HttpGet("curso/{idCurso}")]
+    public async Task<ActionResult<List<Video>>> GetByCurso(int idCurso)
+    {
+        var lista = await _videoService.GetByCursoAsync(idCurso);
+        return Ok(lista);
+    }
+
+    // NUEVO ENDPOINT: GET: api/video/curso/{idCurso}/asignatura/{idAsignatura}
+    [HttpGet("curso/{idCurso}/asignatura/{idAsignatura}")]
+    public async Task<ActionResult<List<Video>>> GetByCursoAndAsignatura(int idCurso, int idAsignatura)
+    {
+        var lista = await _videoService.GetByCursoAndAsignaturaAsync(idCurso, idAsignatura);
+        return Ok(lista);
+    }
 
     // PUT: api/video/{id}
     [HttpPut("{id}")]

@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class VideoService : IVideoService
 {
@@ -27,7 +30,7 @@ public class VideoService : IVideoService
             .FirstOrDefaultAsync(v => v.IdVideo == id);
     }
 
-public async Task<List<Video>> GetByCursoAsync(int idCurso)
+    public async Task<List<Video>> GetByCursoAsync(int idCurso)
     {
         return await _context.Videos
             .Where(v => v.IdCurso == idCurso)
@@ -43,6 +46,17 @@ public async Task<List<Video>> GetByCursoAsync(int idCurso)
             .Where(v => v.IdAsignatura == idAsignatura)
             .Include(v => v.Asignatura)
             .Include(v => v.Usuario)
+            .ToListAsync();
+    }
+
+    // Nuevo método para obtener videos filtrados por curso y asignatura
+    public async Task<List<Video>> GetByCursoAndAsignaturaAsync(int idCurso, int idAsignatura)
+    {
+        return await _context.Videos
+            .Where(v => v.IdCurso == idCurso && v.IdAsignatura == idAsignatura)
+            .Include(v => v.Asignatura)
+            .Include(v => v.Usuario)
+            .Include(v => v.Curso)
             .ToListAsync();
     }
 

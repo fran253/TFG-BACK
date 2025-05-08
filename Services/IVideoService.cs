@@ -7,8 +7,8 @@ public interface IVideoService
     Task<Video?> GetByIdAsync(int id);
     Task<List<Video>> GetByAsignaturaAsync(int idAsignatura);
     Task<List<Video>> GetByUsuarioAsync(int idUsuario);
-    // Nuevo método para obtener videos por curso
     Task<List<Video>> GetByCursoAsync(int idCurso);
+    Task<List<Video>> GetByCursoAndAsignaturaAsync(int idCurso, int idAsignatura);
     Task AddAsync(Video video);
     Task UpdateAsync(Video video);
     Task DeleteAsync(int id);

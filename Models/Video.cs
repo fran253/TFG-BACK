@@ -17,6 +17,7 @@ public class Video
     public string Url { get; set; }
 
     public string? Miniatura { get; set; }
+    public string Duracion { get; set; } = string.Empty;
 
     public DateTime FechaSubida { get; set; } = DateTime.Now;
 
