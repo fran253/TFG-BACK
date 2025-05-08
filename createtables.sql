@@ -1,12 +1,19 @@
 -- Tabla de roles
 CREATE TABLE Rol (
-    idRol INT PRIMARY KEY AUTO_INCREMENT,
+    idRol INT PRIMARY KEY ,
     nombre VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Tabla de dificultades
+CREATE TABLE Dificultad (
+    idDificultad INT PRIMARY KEY ,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion TEXT
 );
 
 -- Preferencias visuales del usuario
 CREATE TABLE Preferencias (
-    idPreferencia INT PRIMARY KEY AUTO_INCREMENT,
+    idPreferencia INT PRIMARY KEY ,
     colorFondo VARCHAR(100),
     colorBordes VARCHAR(100),
     imagenFondo VARCHAR(255)
@@ -14,7 +21,7 @@ CREATE TABLE Preferencias (
 
 -- Usuarios
 CREATE TABLE Usuario (
-    idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+    idUsuario INT PRIMARY KEY ,
     avatar TEXT,
     nombre VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100),
@@ -38,7 +45,7 @@ CREATE TABLE Seguimiento (
 
 -- Cursos
 CREATE TABLE Curso (
-    idCurso INT PRIMARY KEY AUTO_INCREMENT,
+    idCurso INT PRIMARY KEY ,
     nombre VARCHAR(255) NOT NULL,
     imagen TEXT,
     descripcion TEXT,
@@ -56,7 +63,7 @@ CREATE TABLE Usuario_Curso (
 
 -- Asignaturas
 CREATE TABLE Asignatura (
-    idAsignatura INT PRIMARY KEY AUTO_INCREMENT,
+    idAsignatura INT PRIMARY KEY ,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
     imagen TEXT,
@@ -76,7 +83,7 @@ CREATE TABLE Usuario_Asignatura (
 
 -- Vídeos subidos por profesores
 CREATE TABLE Video (
-    idVideo INT PRIMARY KEY AUTO_INCREMENT,
+    idVideo INT PRIMARY KEY ,
     titulo VARCHAR(150) NOT NULL,
     descripcion TEXT,
     url TEXT NOT NULL,
@@ -90,7 +97,7 @@ CREATE TABLE Video (
 
 -- Marcadores de momentos dentro del vídeo
 CREATE TABLE MarcadorVideo (
-    idMarcador INT PRIMARY KEY AUTO_INCREMENT,
+    idMarcador INT PRIMARY KEY ,
     idVideo INT NOT NULL,
     minutoInicio DECIMAL(5,2) NOT NULL,
     minutoFin DECIMAL(5,2) NOT NULL,
@@ -110,7 +117,7 @@ CREATE TABLE Favorito (
 
 -- Comentarios de usuarios en vídeos
 CREATE TABLE ComentarioVideo (
-    idComentario INT PRIMARY KEY AUTO_INCREMENT,
+    idComentario INT PRIMARY KEY ,
     idUsuario INT NOT NULL,
     idVideo INT NOT NULL,
     texto TEXT NOT NULL,
@@ -121,27 +128,30 @@ CREATE TABLE ComentarioVideo (
 
 -- Quizzes creados por profesores
 CREATE TABLE Quiz (
-    idQuiz INT PRIMARY KEY AUTO_INCREMENT,
+    idQuiz INT PRIMARY KEY ,
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
+    duracionPromedio VARCHAR(50),
+    idDificultad INT,
     idAsignatura INT NOT NULL,
     idUsuario INT NOT NULL,
+    FOREIGN KEY (idDificultad) REFERENCES Dificultad(idDificultad) ON DELETE SET NULL,
     FOREIGN KEY (idAsignatura) REFERENCES Asignatura(idAsignatura) ON DELETE CASCADE,
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
 );
 
 -- Preguntas y opciones en cada quiz
 CREATE TABLE DetalleQuiz (
-    idDetalleQuiz INT PRIMARY KEY AUTO_INCREMENT,
+    idDetalleQuiz INT PRIMARY KEY ,
     idQuiz INT NOT NULL,
     pregunta TEXT NOT NULL,
-    opciones TEXT NOT NULL, -- JSON o string separado por ; si no usas tabla aparte
+    opciones TEXT NOT NULL,
     FOREIGN KEY (idQuiz) REFERENCES Quiz(idQuiz) ON DELETE CASCADE
 );
 
 -- Resultados de usuarios en quizzes
 CREATE TABLE ResultadoQuiz (
-    idResultado INT PRIMARY KEY AUTO_INCREMENT,
+    idResultado INT PRIMARY KEY ,
     idUsuario INT NOT NULL,
     idQuiz INT NOT NULL,
     puntuacion DECIMAL(5,2),
@@ -149,17 +159,13 @@ CREATE TABLE ResultadoQuiz (
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
     FOREIGN KEY (idQuiz) REFERENCES Quiz(idQuiz) ON DELETE CASCADE
 );
-<<<<<<< HEAD
-=======
 
 -- Historial de videos para los usuarios
 CREATE TABLE HistorialVideo (
-    idHistorial INT PRIMARY KEY AUTO_INCREMENT,
+    idHistorial INT PRIMARY KEY ,
     idUsuario INT NOT NULL,
     idVideo INT NOT NULL,
     fechaVisualizacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
     FOREIGN KEY (idVideo) REFERENCES Video(idVideo) ON DELETE CASCADE
 );
-
->>>>>>> 80ab0711d3b5cb08e81a76ee11431b31e2e0bac9
