@@ -14,5 +14,5 @@ public class DetalleQuiz
     public string Pregunta { get; set; }
 
     [Required]
-    public string Opciones { get; set; } // Se recomienda JSON si quieres múltiples opciones marcables
+    public string Opciones { get; set; }
 }

@@ -8,4 +8,8 @@ public interface IQuizService
     Task AddAsync(Quiz quiz);
     Task UpdateAsync(Quiz quiz);
     Task DeleteAsync(int id);
+    Task<List<Quiz>> GetByCursoAsync(int idCurso);
+    Task<List<Quiz>> GetByAsignaturaAsync(int idAsignatura);
+    Task<List<Quiz>> GetByCursoYAsignaturaAsync(int idCurso, int idAsignatura);
+
 }

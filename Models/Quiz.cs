@@ -20,6 +20,10 @@ public class Quiz
     public int IdUsuario { get; set; }
     public Usuario Usuario { get; set; }
 
+    [ForeignKey("Curso")]
+    public int? IdCurso { get; set; }
+    public Curso? Curso { get; set; }
+
     public ICollection<DetalleQuiz> Detalles { get; set; }
     public ICollection<ResultadoQuiz> Resultados { get; set; }
 }

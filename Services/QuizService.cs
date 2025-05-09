@@ -49,4 +49,31 @@ public class QuizService : IQuizService
             await _context.SaveChangesAsync();
         }
     }
+    public async Task<List<Quiz>> GetByCursoAsync(int idCurso)
+    {
+        return await _context.Quizzes
+            .Where(q => q.IdCurso == idCurso)
+            .Include(q => q.Asignatura)
+            .Include(q => q.Usuario)
+            .ToListAsync();
+    }
+
+    public async Task<List<Quiz>> GetByAsignaturaAsync(int idAsignatura)
+    {
+        return await _context.Quizzes
+            .Where(q => q.IdAsignatura == idAsignatura)
+            .Include(q => q.Usuario)
+            .Include(q => q.Curso)
+            .ToListAsync();
+    }
+
+    public async Task<List<Quiz>> GetByCursoYAsignaturaAsync(int idCurso, int idAsignatura)
+    {
+        return await _context.Quizzes
+            .Where(q => q.IdCurso == idCurso && q.IdAsignatura == idAsignatura)
+            .Include(q => q.Usuario)
+            .Include(q => q.Curso)
+            .ToListAsync();
+    }
+
 }

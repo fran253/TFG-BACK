@@ -128,17 +128,20 @@ CREATE TABLE ComentarioVideo (
 
 -- Quizzes creados por profesores
 CREATE TABLE Quiz (
-    idQuiz INT PRIMARY KEY ,
+    idQuiz INT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
     duracionPromedio VARCHAR(50),
     idDificultad INT,
     idAsignatura INT NOT NULL,
     idUsuario INT NOT NULL,
+    idCurso INT,
     FOREIGN KEY (idDificultad) REFERENCES Dificultad(idDificultad) ON DELETE SET NULL,
     FOREIGN KEY (idAsignatura) REFERENCES Asignatura(idAsignatura) ON DELETE CASCADE,
-    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (idCurso) REFERENCES Curso(idCurso) ON DELETE SET NULL
 );
+
 
 -- Preguntas y opciones en cada quiz
 CREATE TABLE DetalleQuiz (

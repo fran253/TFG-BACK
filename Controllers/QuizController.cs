@@ -50,4 +50,26 @@ public class QuizController : ControllerBase
         await _service.DeleteAsync(id);
         return NoContent();
     }
+
+    [HttpGet("curso/{idCurso}")]
+    public async Task<ActionResult<List<Quiz>>> GetByCurso(int idCurso)
+    {
+        var quizzes = await _service.GetByCursoAsync(idCurso);
+        return Ok(quizzes);
+    }
+
+    [HttpGet("asignatura/{idAsignatura}")]
+    public async Task<ActionResult<List<Quiz>>> GetByAsignatura(int idAsignatura)
+    {
+        var quizzes = await _service.GetByAsignaturaAsync(idAsignatura);
+        return Ok(quizzes);
+    }
+
+    [HttpGet("curso/{idCurso}/asignatura/{idAsignatura}")]
+    public async Task<ActionResult<List<Quiz>>> GetByCursoYAsignatura(int idCurso, int idAsignatura)
+    {
+        var quizzes = await _service.GetByCursoYAsignaturaAsync(idCurso, idAsignatura);
+        return Ok(quizzes);
+    }
+
 }
