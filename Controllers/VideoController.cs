@@ -1,16 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TuProyecto.Api.DTOs;
+using TuProyecto.Api.DTOs.Video;
+using TuProyecto.Api.DTOs.Marcador;
+
+
 
 [Route("api/[controller]")]
 [ApiController]
 public class VideoController : ControllerBase
 {
     private readonly IVideoService _videoService;
+    private readonly IMarcadorVideoService _marcadorService;
 
-    public VideoController(IVideoService videoService)
+    public VideoController(IVideoService videoService, IMarcadorVideoService marcadorService)
     {
         _videoService = videoService;
+        _marcadorService = marcadorService;
     }
 
     // GET: api/video
@@ -47,14 +54,6 @@ public class VideoController : ControllerBase
         return Ok(lista);
     }
 
-    // POST: api/video
-    [HttpPost]
-    public async Task<ActionResult> Crear([FromBody] Video video)
-    {
-        await _videoService.AddAsync(video);
-        return CreatedAtAction(nameof(GetById), new { id = video.IdVideo }, video);
-    }
-    
     // GET: api/video/curso/{idCurso}
     [HttpGet("curso/{idCurso}")]
     public async Task<ActionResult<List<Video>>> GetByCurso(int idCurso)
@@ -63,7 +62,7 @@ public class VideoController : ControllerBase
         return Ok(lista);
     }
 
-    // NUEVO ENDPOINT: GET: api/video/curso/{idCurso}/asignatura/{idAsignatura}
+    // GET: api/video/curso/{idCurso}/asignatura/{idAsignatura}
     [HttpGet("curso/{idCurso}/asignatura/{idAsignatura}")]
     public async Task<ActionResult<List<Video>>> GetByCursoAndAsignatura(int idCurso, int idAsignatura)
     {
@@ -91,5 +90,43 @@ public class VideoController : ControllerBase
 
         await _videoService.DeleteAsync(id);
         return NoContent();
+    }
+
+    // ✅ NUEVO ENDPOINT PRO: api/video/registrar
+    [HttpPost("registrar")]
+    public async Task<ActionResult> RegistrarVideoConMarcadores([FromBody] RegistrarVideoRequest request)
+    {
+        if (string.IsNullOrEmpty(request.UrlVideo) || string.IsNullOrEmpty(request.UrlMiniatura))
+            return BadRequest("Faltan URLs.");
+
+        var nuevoVideo = new Video
+        {
+            Titulo = request.Titulo,
+            Descripcion = request.Descripcion,
+            Url = request.UrlVideo,
+            Miniatura = request.UrlMiniatura,
+            IdAsignatura = request.IdAsignatura,
+            IdUsuario = request.IdUsuario
+        };
+
+        var idNuevoVideo = await _videoService.AddAsync(nuevoVideo);
+
+        if (request.Marcadores != null && request.Marcadores.Count > 0)
+        {
+            foreach (var marcador in request.Marcadores)
+            {
+                var nuevoMarcador = new MarcadorVideo
+                {
+                    IdVideo = idNuevoVideo,
+                    MinutoInicio = marcador.MinutoInicio,
+                    MinutoFin = marcador.MinutoFin,
+                    Titulo = marcador.Titulo
+                };
+
+                await _marcadorService.AddAsync(nuevoMarcador);
+            }
+        }
+
+        return Ok(new { idVideo = idNuevoVideo });
     }
 }

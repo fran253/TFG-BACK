@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
+using Amazon.S3;
+using Amazon.Runtime;
 
 // Crear el builder
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +13,19 @@ var connectionString = builder.Configuration.GetConnectionString("bbddAcademIQ")
 builder.Services.AddDbContext<AcademIQDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-
+// ---------------------------- Configuración de AWS S3 ----------------------------
+var awsOptions = builder.Configuration.GetSection("AWS");
+if (awsOptions.Exists())
+{
+    builder.Services.AddSingleton<IAmazonS3>(provider => {
+        var accessKey = awsOptions["AccessKey"];
+        var secretKey = awsOptions["SecretKey"];
+        var region = awsOptions["Region"];
+        
+        var credentials = new BasicAWSCredentials(accessKey, secretKey);
+        return new AmazonS3Client(credentials, Amazon.RegionEndpoint.GetBySystemName(region));
+    });
+}
 
 // ---------------------------- Configuración de archivos grandes ----------------------------
 builder.Services.Configure<IISServerOptions>(options =>
