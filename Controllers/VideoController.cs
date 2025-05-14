@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using TuProyecto.Api.DTOs;
-using TuProyecto.Api.DTOs.Video;
 using TuProyecto.Api.DTOs.Marcador;
-
-
+using TFG_BACK.Services;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -13,11 +9,13 @@ public class VideoController : ControllerBase
 {
     private readonly IVideoService _videoService;
     private readonly IMarcadorVideoService _marcadorService;
+    private readonly IS3UploaderService _s3UploaderService;
 
-    public VideoController(IVideoService videoService, IMarcadorVideoService marcadorService)
+    public VideoController(IVideoService videoService, IMarcadorVideoService marcadorService, IS3UploaderService s3UploaderService)
     {
         _videoService = videoService;
         _marcadorService = marcadorService;
+        _s3UploaderService = s3UploaderService;
     }
 
     // GET: api/video
@@ -38,22 +36,6 @@ public class VideoController : ControllerBase
         return Ok(video);
     }
 
-    // GET: api/video/asignatura/{idAsignatura}
-    [HttpGet("asignatura/{idAsignatura}")]
-    public async Task<ActionResult<List<Video>>> GetByAsignatura(int idAsignatura)
-    {
-        var lista = await _videoService.GetByAsignaturaAsync(idAsignatura);
-        return Ok(lista);
-    }
-
-    // GET: api/video/usuario/{idUsuario}
-    [HttpGet("usuario/{idUsuario}")]
-    public async Task<ActionResult<List<Video>>> GetByUsuario(int idUsuario)
-    {
-        var lista = await _videoService.GetByUsuarioAsync(idUsuario);
-        return Ok(lista);
-    }
-
     // GET: api/video/curso/{idCurso}
     [HttpGet("curso/{idCurso}")]
     public async Task<ActionResult<List<Video>>> GetByCurso(int idCurso)
@@ -67,6 +49,14 @@ public class VideoController : ControllerBase
     public async Task<ActionResult<List<Video>>> GetByCursoAndAsignatura(int idCurso, int idAsignatura)
     {
         var lista = await _videoService.GetByCursoAndAsignaturaAsync(idCurso, idAsignatura);
+        return Ok(lista);
+    }
+
+    // GET: api/video/usuario/{idUsuario}
+    [HttpGet("usuario/{idUsuario}")]
+    public async Task<ActionResult<List<Video>>> GetByUsuario(int idUsuario)
+    {
+        var lista = await _videoService.GetByUsuarioAsync(idUsuario);
         return Ok(lista);
     }
 
@@ -92,25 +82,32 @@ public class VideoController : ControllerBase
         return NoContent();
     }
 
-    // ✅ NUEVO ENDPOINT PRO: api/video/registrar
+    // NUEVO ENDPOINT PRO: api/video/registrar
     [HttpPost("registrar")]
-    public async Task<ActionResult> RegistrarVideoConMarcadores([FromBody] RegistrarVideoRequest request)
+    public async Task<ActionResult> RegistrarVideoConMarcadores([FromForm] RegistrarVideoRequest request)
     {
-        if (string.IsNullOrEmpty(request.UrlVideo) || string.IsNullOrEmpty(request.UrlMiniatura))
-            return BadRequest("Faltan URLs.");
+        if (request.Video == null || request.Miniatura == null)
+            return BadRequest("Faltan los archivos de vídeo o miniatura.");
 
-        var nuevoVideo = new Video
-        {
-            Titulo = request.Titulo,
-            Descripcion = request.Descripcion,
-            Url = request.UrlVideo,
-            Miniatura = request.UrlMiniatura,
-            IdAsignatura = request.IdAsignatura,
-            IdUsuario = request.IdUsuario
-        };
+        // Subir vídeo y miniatura a S3
+        var urlVideo = await _s3UploaderService.SubirArchivoAsync(request.Video, "video");
+        var urlMiniatura = await _s3UploaderService.SubirArchivoAsync(request.Miniatura, "miniatura");
+
+            var nuevoVideo = new Video
+            {
+                Titulo = request.Titulo,
+                Descripcion = request.Descripcion,
+                Url = urlVideo,
+                Miniatura = urlMiniatura,
+                IdAsignatura = request.IdAsignatura,
+                IdUsuario = request.IdUsuario,
+                IdCurso = request.IdCurso  
+            };
+
 
         var idNuevoVideo = await _videoService.AddAsync(nuevoVideo);
 
+        // Si hay marcadores, guardarlos también
         if (request.Marcadores != null && request.Marcadores.Count > 0)
         {
             foreach (var marcador in request.Marcadores)
@@ -118,8 +115,7 @@ public class VideoController : ControllerBase
                 var nuevoMarcador = new MarcadorVideo
                 {
                     IdVideo = idNuevoVideo,
-                    MinutoInicio = marcador.MinutoInicio,
-                    MinutoFin = marcador.MinutoFin,
+                    MinutoImportante = marcador.MinutoImportante,
                     Titulo = marcador.Titulo
                 };
 
@@ -129,4 +125,6 @@ public class VideoController : ControllerBase
 
         return Ok(new { idVideo = idNuevoVideo });
     }
+
+
 }

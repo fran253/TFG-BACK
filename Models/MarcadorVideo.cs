@@ -11,10 +11,7 @@ public class MarcadorVideo
     public Video Video { get; set; }
 
     [Required]
-    public decimal MinutoInicio { get; set; }
-
-    [Required]
-    public decimal MinutoFin { get; set; }
+    public decimal MinutoImportante { get; set; }  // Nueva propiedad
 
     public string? Titulo { get; set; }
 }

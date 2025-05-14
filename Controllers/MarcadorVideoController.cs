@@ -35,6 +35,7 @@ public class MarcadorVideoController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Crear([FromBody] MarcadorVideo marcador)
     {
+        // Aquí no necesitas hacer ningún cambio específico respecto a las columnas, ya que 'MinutoImportante' es la nueva propiedad.
         await _marcadorService.AddAsync(marcador);
         return CreatedAtAction(nameof(GetById), new { id = marcador.IdMarcador }, marcador);
     }
@@ -45,6 +46,8 @@ public class MarcadorVideoController : ControllerBase
     {
         if (id != marcador.IdMarcador)
             return BadRequest("El ID no coincide.");
+        
+        // Asegúrate de que el marcador que se actualiza incluye la propiedad 'MinutoImportante' correctamente.
         await _marcadorService.UpdateAsync(marcador);
         return NoContent();
     }

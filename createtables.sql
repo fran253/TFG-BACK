@@ -13,7 +13,7 @@ CREATE TABLE Dificultad (
 
 -- Preferencias visuales del usuario
 CREATE TABLE Preferencias (
-    idPreferencia INT PRIMARY KEY ,
+    idPreferencia INT PRIMARY KEY AUTO_INCREMENT,
     colorFondo VARCHAR(100),
     colorBordes VARCHAR(100),
     imagenFondo VARCHAR(255)
@@ -21,7 +21,7 @@ CREATE TABLE Preferencias (
 
 -- Usuarios
 CREATE TABLE Usuario (
-    idUsuario INT PRIMARY KEY ,
+    idUsuario INT PRIMARY KEY AUTO_INCREMENT,
     avatar TEXT,
     nombre VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100),
@@ -83,21 +83,24 @@ CREATE TABLE Usuario_Asignatura (
 
 -- Vídeos subidos por profesores
 CREATE TABLE Video (
-    idVideo INT PRIMARY KEY ,
+    idVideo INT PRIMARY KEY AUTO_INCREMENT,
     titulo VARCHAR(150) NOT NULL,
     descripcion TEXT,
+    duracion TEXT,
     url TEXT NOT NULL,
     miniatura TEXT,
     fechaSubida DATETIME DEFAULT CURRENT_TIMESTAMP,
     idAsignatura INT NOT NULL,
+    idCurso INT NOT NULL,
     idUsuario INT NOT NULL,
     FOREIGN KEY (idAsignatura) REFERENCES Asignatura(idAsignatura) ON DELETE CASCADE,
+    FOREIGN KEY (idCurso) REFERENCES Curso(idCurso) ON DELETE CASCADE,
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
 );
 
 -- Marcadores de momentos dentro del vídeo
 CREATE TABLE MarcadorVideo (
-    idMarcador INT PRIMARY KEY,
+    idMarcador INT PRIMARY KEY AUTO_INCREMENT,
     idVideo INT NOT NULL,
     minutoImportante DECIMAL(5,2) NOT NULL,
     titulo VARCHAR(100),
@@ -117,7 +120,7 @@ CREATE TABLE Favorito (
 
 -- Comentarios de usuarios en vídeos
 CREATE TABLE ComentarioVideo (
-    idComentario INT PRIMARY KEY ,
+    idComentario INT PRIMARY KEY AUTO_INCREMENT,
     idUsuario INT NOT NULL,
     idVideo INT NOT NULL,
     texto TEXT NOT NULL,
@@ -145,7 +148,7 @@ CREATE TABLE Quiz (
 
 -- Preguntas y opciones en cada quiz
 CREATE TABLE DetalleQuiz (
-    idDetalleQuiz INT PRIMARY KEY ,
+    idDetalleQuiz INT PRIMARY KEY AUTO_INCREMENT,
     idQuiz INT NOT NULL,
     pregunta TEXT NOT NULL,
     opciones TEXT NOT NULL,
@@ -154,7 +157,7 @@ CREATE TABLE DetalleQuiz (
 
 -- Resultados de usuarios en quizzes
 CREATE TABLE ResultadoQuiz (
-    idResultado INT PRIMARY KEY ,
+    idResultado INT PRIMARY KEY AUTO_INCREMENT,
     idUsuario INT NOT NULL,
     idQuiz INT NOT NULL,
     puntuacion DECIMAL(5,2),
@@ -165,7 +168,7 @@ CREATE TABLE ResultadoQuiz (
 
 -- Historial de videos para los usuarios
 CREATE TABLE HistorialVideo (
-    idHistorial INT PRIMARY KEY ,
+    idHistorial INT PRIMARY KEY AUTO_INCREMENT,
     idUsuario INT NOT NULL,
     idVideo INT NOT NULL,
     fechaVisualizacion DATETIME DEFAULT CURRENT_TIMESTAMP,

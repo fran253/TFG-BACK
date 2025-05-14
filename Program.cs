@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
 using Amazon.S3;
+using TFG_BACK.Services;
 using Amazon.Runtime;
 
 // Crear el builder
@@ -85,6 +86,10 @@ builder.Services.AddScoped<IResultadoQuizService, ResultadoQuizService>();
 
 // RELACIONES
 builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
+
+//S3
+builder.Services.AddScoped<IS3UploaderService, S3UploaderService>();
+
 
 // ---------------------------- Controladores y Swagger ----------------------------
 builder.Services.AddControllers()

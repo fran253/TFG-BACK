@@ -36,9 +36,10 @@ public class Video
     // Nueva propiedad para la relación con Curso
     [ForeignKey("Curso")]
     public int? IdCurso { get; set; }
-    
+
     [JsonIgnore]
     public Curso? Curso { get; set; }
+
 
     [JsonIgnore]
     public ICollection<MarcadorVideo> Marcadores { get; set; }
