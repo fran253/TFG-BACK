@@ -49,7 +49,6 @@ public class VideoService : IVideoService
             .ToListAsync();
     }
 
-    // Nuevo método para obtener videos filtrados por curso y asignatura
     public async Task<List<Video>> GetByCursoAndAsignaturaAsync(int idCurso, int idAsignatura)
     {
         return await _context.Videos
@@ -67,10 +66,11 @@ public class VideoService : IVideoService
             .ToListAsync();
     }
 
-    public async Task AddAsync(Video video)
+    public async Task<int> AddAsync(Video video)
     {
         _context.Videos.Add(video);
         await _context.SaveChangesAsync();
+        return video.IdVideo; // aquí ya está seteado por EF Core si es AUTO_INCREMENT
     }
 
     public async Task UpdateAsync(Video video)

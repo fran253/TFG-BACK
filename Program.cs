@@ -16,6 +16,8 @@ var connectionString = builder.Configuration.GetConnectionString("bbddAcademIQ")
 builder.Services.AddDbContext<AcademIQDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+
+
 // ---------------------------- Configuración de archivos grandes ----------------------------
 builder.Services.Configure<IISServerOptions>(options =>
 {
