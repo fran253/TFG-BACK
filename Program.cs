@@ -1,6 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
+// Elimina o comenta esta línea:
+// using Microsoft.AspNetCore.Authentication.JwtBearer;
+// Elimina o comenta esta línea:
+// using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 // Crear el builder
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +15,6 @@ var connectionString = builder.Configuration.GetConnectionString("bbddAcademIQ")
 
 builder.Services.AddDbContext<AcademIQDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-
 
 // ---------------------------- Configuración de archivos grandes ----------------------------
 builder.Services.Configure<IISServerOptions>(options =>
@@ -44,6 +47,27 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+// ---------------------------- Comentamos la Configuración de autenticación JWT ----------------------------
+// Comenta o elimina todo este bloque
+/*
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+*/
+
+// Opcionalmente, podemos agregar una autenticación básica si la necesitas
+// Sin usar paquetes externos
+builder.Services.AddAuthentication();
 
 // ---------------------------- Servicios (AddScoped) ----------------------------
 
@@ -88,7 +112,10 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 
+// Debe ir antes de MapControllers para que funcione la autenticación/autorización
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
