@@ -97,13 +97,13 @@ CREATE TABLE Video (
 
 -- Marcadores de momentos dentro del vídeo
 CREATE TABLE MarcadorVideo (
-    idMarcador INT PRIMARY KEY ,
+    idMarcador INT PRIMARY KEY,
     idVideo INT NOT NULL,
-    minutoInicio DECIMAL(5,2) NOT NULL,
-    minutoFin DECIMAL(5,2) NOT NULL,
+    minutoImportante DECIMAL(5,2) NOT NULL,
     titulo VARCHAR(100),
     FOREIGN KEY (idVideo) REFERENCES Video(idVideo) ON DELETE CASCADE
 );
+
 
 -- Vídeos marcados como favoritos por usuarios
 CREATE TABLE Favorito (
