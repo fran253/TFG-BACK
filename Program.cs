@@ -1,10 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
-// Elimina o comenta esta línea:
-// using Microsoft.AspNetCore.Authentication.JwtBearer;
-// Elimina o comenta esta línea:
-// using Microsoft.IdentityModel.Tokens;
+using Amazon.S3;
+using Amazon.Runtime;
 using TFG_BACK.Services;
 using System.Text;
 
@@ -17,7 +15,19 @@ var connectionString = builder.Configuration.GetConnectionString("bbddAcademIQ")
 builder.Services.AddDbContext<AcademIQDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-
+// ---------------------------- Configuración de AWS S3 ----------------------------
+var awsOptions = builder.Configuration.GetSection("AWS");
+if (awsOptions.Exists())
+{
+    builder.Services.AddSingleton<IAmazonS3>(provider => {
+        var accessKey = awsOptions["AccessKey"];
+        var secretKey = awsOptions["SecretKey"];
+        var region = awsOptions["Region"];
+        
+        var credentials = new BasicAWSCredentials(accessKey, secretKey);
+        return new AmazonS3Client(credentials, Amazon.RegionEndpoint.GetBySystemName(region));
+    });
+}
 
 // ---------------------------- Configuración de archivos grandes ----------------------------
 builder.Services.Configure<IISServerOptions>(options =>
@@ -99,9 +109,8 @@ builder.Services.AddScoped<IResultadoQuizService, ResultadoQuizService>();
 // RELACIONES
 builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
 
-//S3
+// S3
 builder.Services.AddScoped<IS3UploaderService, S3UploaderService>();
-
 
 // ---------------------------- Controladores y Swagger ----------------------------
 builder.Services.AddControllers()
