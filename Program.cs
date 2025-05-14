@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
-using Amazon.S3;
+// Elimina o comenta esta línea:
+// using Microsoft.AspNetCore.Authentication.JwtBearer;
+// Elimina o comenta esta línea:
+// using Microsoft.IdentityModel.Tokens;
 using TFG_BACK.Services;
-using Amazon.Runtime;
+using System.Text;
 
 // Crear el builder
 var builder = WebApplication.CreateBuilder(args);
@@ -14,19 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("bbddAcademIQ")
 builder.Services.AddDbContext<AcademIQDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// ---------------------------- Configuración de AWS S3 ----------------------------
-var awsOptions = builder.Configuration.GetSection("AWS");
-if (awsOptions.Exists())
-{
-    builder.Services.AddSingleton<IAmazonS3>(provider => {
-        var accessKey = awsOptions["AccessKey"];
-        var secretKey = awsOptions["SecretKey"];
-        var region = awsOptions["Region"];
-        
-        var credentials = new BasicAWSCredentials(accessKey, secretKey);
-        return new AmazonS3Client(credentials, Amazon.RegionEndpoint.GetBySystemName(region));
-    });
-}
+
 
 // ---------------------------- Configuración de archivos grandes ----------------------------
 builder.Services.Configure<IISServerOptions>(options =>
@@ -59,6 +50,27 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+// ---------------------------- Comentamos la Configuración de autenticación JWT ----------------------------
+// Comenta o elimina todo este bloque
+/*
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+*/
+
+// Opcionalmente, podemos agregar una autenticación básica si la necesitas
+// Sin usar paquetes externos
+builder.Services.AddAuthentication();
 
 // ---------------------------- Servicios (AddScoped) ----------------------------
 
@@ -107,7 +119,10 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 
+// Debe ir antes de MapControllers para que funcione la autenticación/autorización
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
