@@ -83,48 +83,31 @@ public class VideoController : ControllerBase
     }
 
     // NUEVO ENDPOINT PRO: api/video/registrar
-    [HttpPost("registrar")]
-    public async Task<ActionResult> RegistrarVideoConMarcadores([FromForm] RegistrarVideoRequest request)
+   [HttpPost("registrar")]
+    public async Task<ActionResult> RegistrarVideo([FromForm] RegistrarVideoRequest request)
     {
         if (request.Video == null || request.Miniatura == null)
             return BadRequest("Faltan los archivos de vídeo o miniatura.");
 
-        // Subir vídeo y miniatura a S3
         var urlVideo = await _s3UploaderService.SubirArchivoAsync(request.Video, "video");
         var urlMiniatura = await _s3UploaderService.SubirArchivoAsync(request.Miniatura, "miniatura");
 
-            var nuevoVideo = new Video
-            {
-                Titulo = request.Titulo,
-                Descripcion = request.Descripcion,
-                Url = urlVideo,
-                Miniatura = urlMiniatura,
-                IdAsignatura = request.IdAsignatura,
-                IdUsuario = request.IdUsuario,
-                IdCurso = request.IdCurso  
-            };
-
+        var nuevoVideo = new Video
+        {
+            Titulo = request.Titulo,
+            Descripcion = request.Descripcion,
+            Url = urlVideo,
+            Miniatura = urlMiniatura,
+            IdAsignatura = request.IdAsignatura,
+            IdUsuario = request.IdUsuario,
+            IdCurso = request.IdCurso  
+        };
 
         var idNuevoVideo = await _videoService.AddAsync(nuevoVideo);
 
-        // Si hay marcadores, guardarlos también
-        if (request.Marcadores != null && request.Marcadores.Count > 0)
-        {
-            foreach (var marcador in request.Marcadores)
-            {
-                var nuevoMarcador = new MarcadorVideo
-                {
-                    IdVideo = idNuevoVideo,
-                    MinutoImportante = marcador.MinutoImportante,
-                    Titulo = marcador.Titulo
-                };
-
-                await _marcadorService.AddAsync(nuevoMarcador);
-            }
-        }
-
         return Ok(new { idVideo = idNuevoVideo });
     }
+
 
 
 }
