@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 public class MarcadorVideo
 {
@@ -8,10 +9,11 @@ public class MarcadorVideo
 
     [ForeignKey("Video")]
     public int IdVideo { get; set; }
+    [JsonIgnore]
     public Video Video { get; set; }
 
     [Required]
-    public decimal MinutoImportante { get; set; }  // Nueva propiedad
+    public decimal MinutoImportante { get; set; } 
 
     public string? Titulo { get; set; }
 }
