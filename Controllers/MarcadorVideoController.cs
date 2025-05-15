@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TuProyecto.Api.DTOs.Marcador;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -46,7 +47,7 @@ public class MarcadorVideoController : ControllerBase
     {
         if (id != marcador.IdMarcador)
             return BadRequest("El ID no coincide.");
-        
+
         // Asegúrate de que el marcador que se actualiza incluye la propiedad 'MinutoImportante' correctamente.
         await _marcadorService.UpdateAsync(marcador);
         return NoContent();
@@ -59,4 +60,28 @@ public class MarcadorVideoController : ControllerBase
         await _marcadorService.DeleteAsync(id);
         return NoContent();
     }
+    
+    // POST: api/marcadorvideo/video/{idVideo}/bulk
+    [HttpPost("video/{idVideo}/bulk")]
+    public async Task<ActionResult> CrearMarcadoresEnLote(int idVideo, [FromBody] List<MarcadorRequest> marcadores)
+    {
+        if (marcadores == null || marcadores.Count == 0)
+            return BadRequest("No se han enviado marcadores");
+
+        foreach (var marcador in marcadores)
+        {
+            var nuevoMarcador = new MarcadorVideo
+            {
+                IdVideo = idVideo,
+                MinutoImportante = marcador.MinutoImportante,
+                Titulo = marcador.Titulo
+            };
+
+            await _marcadorService.AddAsync(nuevoMarcador);
+        }
+
+        return Ok();
+    }
+
+
 }
