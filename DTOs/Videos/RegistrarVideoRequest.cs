@@ -6,8 +6,7 @@ public class RegistrarVideoRequest
     public string Descripcion { get; set; }
     public int IdAsignatura { get; set; }
     public int IdUsuario { get; set; }
-    public int? IdCurso { get; set; }  // <-- Aquí debe estar
+    public int? IdCurso { get; set; }
     public IFormFile Video { get; set; }
     public IFormFile Miniatura { get; set; }
-    public List<MarcadorRequest> Marcadores { get; set; }
 }
