@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TuProyecto.Models;
 
 public class AcademIQDbContext : DbContext
 {
@@ -23,6 +24,8 @@ public class AcademIQDbContext : DbContext
     public DbSet<ResultadoQuiz> ResultadosQuiz { get; set; }
 
     public DbSet<Seguimiento> Seguimientos { get; set; }
+    public DbSet<ReporteVideo> ReportesVideo { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

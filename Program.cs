@@ -100,6 +100,8 @@ builder.Services.AddScoped<IVideoService, VideoService>();
 builder.Services.AddScoped<IMarcadorVideoService, MarcadorVideoService>();
 builder.Services.AddScoped<IComentarioVideoService, ComentarioVideoService>();
 builder.Services.AddScoped<IFavoritoService, FavoritoService>();
+builder.Services.AddScoped<IReporteVideoService, ReporteVideoService>();
+
 
 // QUIZZES
 builder.Services.AddScoped<IQuizService, QuizService>();

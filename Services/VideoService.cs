@@ -70,7 +70,7 @@ public class VideoService : IVideoService
     {
         _context.Videos.Add(video);
         await _context.SaveChangesAsync();
-        return video.IdVideo; // aquí ya está seteado por EF Core si es AUTO_INCREMENT
+        return video.IdVideo;
     }
 
     public async Task UpdateAsync(Video video)
@@ -88,4 +88,15 @@ public class VideoService : IVideoService
             await _context.SaveChangesAsync();
         }
     }
+    
+    public async Task<List<Video>> GetVideosReportadosAsync()
+    {
+        return await _context.Videos
+            .Where(v => v.NumReportes > 0)
+            .Include(v => v.Asignatura)
+            .Include(v => v.Usuario)
+            .Include(v => v.Curso)
+            .ToListAsync();
+    }
+
 }
