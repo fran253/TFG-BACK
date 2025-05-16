@@ -82,6 +82,7 @@ CREATE TABLE Usuario_Asignatura (
 );
 
 -- Vídeos subidos por profesores
+--Añadir campo numero reportes: ALTER TABLE Video ADD COLUMN numReportes INT DEFAULT 0;
 CREATE TABLE Video (
     idVideo INT PRIMARY KEY AUTO_INCREMENT,
     titulo VARCHAR(150) NOT NULL,
@@ -90,6 +91,7 @@ CREATE TABLE Video (
     url TEXT NOT NULL,
     miniatura TEXT,
     fechaSubida DATETIME DEFAULT CURRENT_TIMESTAMP,
+    numReportes INT DEFAULT 0, 
     idAsignatura INT NOT NULL,
     idCurso INT NOT NULL,
     idUsuario INT NOT NULL,
@@ -97,6 +99,7 @@ CREATE TABLE Video (
     FOREIGN KEY (idCurso) REFERENCES Curso(idCurso) ON DELETE CASCADE,
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
 );
+
 
 -- Marcadores de momentos dentro del vídeo
 CREATE TABLE MarcadorVideo (
@@ -175,3 +178,14 @@ CREATE TABLE HistorialVideo (
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
     FOREIGN KEY (idVideo) REFERENCES Video(idVideo) ON DELETE CASCADE
 );
+
+CREATE TABLE ReporteVideo (
+    idReporte INT PRIMARY KEY AUTO_INCREMENT,
+    idVideo INT NOT NULL,
+    idUsuario INT NOT NULL,
+    motivo VARCHAR(100) NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idVideo) REFERENCES Video(idVideo) ON DELETE CASCADE,
+    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+);
+
