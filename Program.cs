@@ -87,7 +87,6 @@ builder.Services.AddAuthentication();
 // CORE
 builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IPreferenciasService, PreferenciasService>();
 
 // CURSOS / ASIGNATURAS
 builder.Services.AddScoped<IAsignaturaService, AsignaturaService>();
@@ -100,6 +99,8 @@ builder.Services.AddScoped<IVideoService, VideoService>();
 builder.Services.AddScoped<IMarcadorVideoService, MarcadorVideoService>();
 builder.Services.AddScoped<IComentarioVideoService, ComentarioVideoService>();
 builder.Services.AddScoped<IFavoritoService, FavoritoService>();
+builder.Services.AddScoped<IReporteVideoService, ReporteVideoService>();
+
 
 // QUIZZES
 builder.Services.AddScoped<IQuizService, QuizService>();

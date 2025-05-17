@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TuProyecto.Models;
 
 public class AcademIQDbContext : DbContext
 {
@@ -6,8 +7,6 @@ public class AcademIQDbContext : DbContext
 
     public DbSet<Rol> Roles { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
-    public DbSet<Preferencias> Preferencias { get; set; }
-
     public DbSet<Curso> Cursos { get; set; }
     public DbSet<Asignatura> Asignaturas { get; set; }
     public DbSet<UsuarioCurso> UsuarioCursos { get; set; }
@@ -23,6 +22,8 @@ public class AcademIQDbContext : DbContext
     public DbSet<ResultadoQuiz> ResultadosQuiz { get; set; }
 
     public DbSet<Seguimiento> Seguimientos { get; set; }
+    public DbSet<ReporteVideo> ReportesVideo { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -59,7 +60,6 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<DetalleQuiz>().ToTable("DetalleQuiz");
         modelBuilder.Entity<Favorito>().ToTable("Favorito");
         modelBuilder.Entity<MarcadorVideo>().ToTable("MarcadorVideo");
-        modelBuilder.Entity<Preferencias>().ToTable("Preferencias");
         modelBuilder.Entity<Quiz>().ToTable("Quiz");
         modelBuilder.Entity<ResultadoQuiz>().ToTable("ResultadoQuiz");
         modelBuilder.Entity<Rol>().ToTable("Rol");

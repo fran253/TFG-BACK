@@ -21,32 +21,33 @@ public class Video
 
     public DateTime FechaSubida { get; set; } = DateTime.Now;
 
+    public int NumReportes { get; set; } = 0;
+
     [ForeignKey("Asignatura")]
     public int IdAsignatura { get; set; }
-    
+
     [JsonIgnore]
     public Asignatura Asignatura { get; set; }
 
     [ForeignKey("Usuario")]
     public int IdUsuario { get; set; }
-    
+
     [JsonIgnore]
     public Usuario Usuario { get; set; }
-    
-    // Nueva propiedad para la relación con Curso
+
     [ForeignKey("Curso")]
     public int? IdCurso { get; set; }
 
     [JsonIgnore]
     public Curso? Curso { get; set; }
 
-
     [JsonIgnore]
     public ICollection<MarcadorVideo> Marcadores { get; set; }
-    
+
     [JsonIgnore]
     public ICollection<ComentarioVideo> Comentarios { get; set; }
-    
+
     [JsonIgnore]
     public ICollection<Favorito> Favoritos { get; set; }
 }
+

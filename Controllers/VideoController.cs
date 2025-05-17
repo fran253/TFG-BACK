@@ -83,7 +83,7 @@ public class VideoController : ControllerBase
     }
 
     // NUEVO ENDPOINT PRO: api/video/registrar
-   [HttpPost("registrar")]
+    [HttpPost("registrar")]
     public async Task<ActionResult> RegistrarVideo([FromForm] RegistrarVideoRequest request)
     {
         if (request.Video == null || request.Miniatura == null)
@@ -100,7 +100,7 @@ public class VideoController : ControllerBase
             Miniatura = urlMiniatura,
             IdAsignatura = request.IdAsignatura,
             IdUsuario = request.IdUsuario,
-            IdCurso = request.IdCurso  
+            IdCurso = request.IdCurso
         };
 
         var idNuevoVideo = await _videoService.AddAsync(nuevoVideo);
@@ -108,6 +108,11 @@ public class VideoController : ControllerBase
         return Ok(new { idVideo = idNuevoVideo });
     }
 
-
-
+    // GET: api/video/reportados
+    [HttpGet("reportados")]
+    public async Task<ActionResult<List<Video>>> GetVideosReportados()
+    {
+        var lista = await _videoService.GetVideosReportadosAsync();
+        return Ok(lista);
+    }
 }
