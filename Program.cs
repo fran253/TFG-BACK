@@ -87,7 +87,6 @@ builder.Services.AddAuthentication();
 // CORE
 builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IPreferenciasService, PreferenciasService>();
 
 // CURSOS / ASIGNATURAS
 builder.Services.AddScoped<IAsignaturaService, AsignaturaService>();

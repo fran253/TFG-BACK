@@ -13,7 +13,6 @@ public class UsuarioService : IUsuarioService
     {
         return await _context.Usuarios
             .Include(u => u.Rol)
-            .Include(u => u.Preferencias)
             .ToListAsync();
     }
 
@@ -21,7 +20,6 @@ public class UsuarioService : IUsuarioService
     {
         return await _context.Usuarios
             .Include(u => u.Rol)
-            .Include(u => u.Preferencias)
             .FirstOrDefaultAsync(u => u.IdUsuario == id);
     }
 
