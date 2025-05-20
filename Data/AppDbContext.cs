@@ -68,5 +68,6 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<UsuarioAsignatura>().ToTable("Usuario_Asignatura");
         modelBuilder.Entity<UsuarioCurso>().ToTable("Usuario_Curso");
         modelBuilder.Entity<Video>().ToTable("Video");
+        modelBuilder.Entity<ReporteVideo>().ToTable("ReporteVideo");
     }
 }
