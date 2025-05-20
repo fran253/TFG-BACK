@@ -1,3 +1,4 @@
+// Modificación de Data/AppDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using TuProyecto.Models;
 
@@ -21,7 +22,8 @@ public class AcademIQDbContext : DbContext
     public DbSet<DetalleQuiz> DetallesQuiz { get; set; }
     public DbSet<ResultadoQuiz> ResultadosQuiz { get; set; }
 
-    public DbSet<Seguimiento> Seguimientos { get; set; }
+    // Eliminar esta línea
+    // public DbSet<Seguimiento> Seguimientos { get; set; }
     public DbSet<ReporteVideo> ReportesVideo { get; set; }
 
 
@@ -37,6 +39,8 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<Favorito>()
             .HasKey(f => new { f.IdUsuario, f.IdVideo });
 
+        // Eliminar este bloque
+        /*
         modelBuilder.Entity<Seguimiento>()
             .HasKey(s => new { s.IdAlumno, s.IdProfesor });
 
@@ -52,6 +56,16 @@ public class AcademIQDbContext : DbContext
             .WithMany(u => u.Seguidos)
             .HasForeignKey(s => s.IdProfesor)
             .OnDelete(DeleteBehavior.Restrict);
+        */
+
+        // Añadir conversión para la lista de cursos seguidos
+        modelBuilder.Entity<Usuario>()
+            .Property(u => u.CursosSeguidos)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                     .Select(int.Parse)
+                     .ToList());
 
         // Configurar nombres de tablas para que coincidan con la base de datos
         modelBuilder.Entity<Asignatura>().ToTable("Asignatura");
@@ -63,7 +77,8 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<Quiz>().ToTable("Quiz");
         modelBuilder.Entity<ResultadoQuiz>().ToTable("ResultadoQuiz");
         modelBuilder.Entity<Rol>().ToTable("Rol");
-        modelBuilder.Entity<Seguimiento>().ToTable("Seguimiento");
+        // Eliminar esta línea:
+        // modelBuilder.Entity<Seguimiento>().ToTable("Seguimiento");
         modelBuilder.Entity<Usuario>().ToTable("Usuario");
         modelBuilder.Entity<UsuarioAsignatura>().ToTable("Usuario_Asignatura");
         modelBuilder.Entity<UsuarioCurso>().ToTable("Usuario_Curso");

@@ -1,3 +1,4 @@
+// Modificación de Models/Usuario.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -28,12 +29,8 @@ public class Usuario
     [JsonIgnore]
     public Rol? Rol { get; set; } 
 
-
-    [JsonIgnore]
-    public ICollection<Seguimiento> Seguidores { get; set; }
-
-    [JsonIgnore]
-    public ICollection<Seguimiento> Seguidos { get; set; }
+    // Nueva propiedad para almacenar los IDs de cursos seguidos
+    public List<int> CursosSeguidos { get; set; } = new List<int>();
 
     [JsonIgnore]
     public ICollection<UsuarioCurso> UsuarioCursos { get; set; }
@@ -58,8 +55,6 @@ public class Usuario
 
     public Usuario()
     {
-        Seguidores = new List<Seguimiento>();
-        Seguidos = new List<Seguimiento>();
         UsuarioCursos = new List<UsuarioCurso>();
         UsuarioAsignaturas = new List<UsuarioAsignatura>();
         Videos = new List<Video>();
@@ -67,5 +62,6 @@ public class Usuario
         Favoritos = new List<Favorito>();
         Quizzes = new List<Quiz>();
         Resultados = new List<ResultadoQuiz>();
+        CursosSeguidos = new List<int>();
     }
 }

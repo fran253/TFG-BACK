@@ -1,3 +1,4 @@
+// Modificar Controllers/UsuarioController.cs
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
@@ -51,5 +52,32 @@ public class UsuarioController : ControllerBase
     {
         await _service.DeleteAsync(id);
         return NoContent();
+    }
+
+    // Nuevos endpoints para cursos seguidos
+    [HttpGet("{idUsuario}/cursos-seguidos")]
+    public async Task<ActionResult<List<Curso>>> GetCursosSeguidos(int idUsuario)
+    {
+        return Ok(await _service.GetCursosSeguidosAsync(idUsuario));
+    }
+
+    [HttpPost("{idUsuario}/seguir-curso/{idCurso}")]
+    public async Task<ActionResult> SeguirCurso(int idUsuario, int idCurso)
+    {
+        await _service.SeguirCursoAsync(idUsuario, idCurso);
+        return Ok();
+    }
+
+    [HttpDelete("{idUsuario}/dejar-de-seguir-curso/{idCurso}")]
+    public async Task<ActionResult> DejarDeSeguirCurso(int idUsuario, int idCurso)
+    {
+        await _service.DejarDeSeguirCursoAsync(idUsuario, idCurso);
+        return NoContent();
+    }
+
+    [HttpGet("{idUsuario}/sigue-curso/{idCurso}")]
+    public async Task<ActionResult<bool>> SigueCurso(int idUsuario, int idCurso)
+    {
+        return Ok(await _service.SigueCursoAsync(idUsuario, idCurso));
     }
 }

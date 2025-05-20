@@ -108,7 +108,8 @@ builder.Services.AddScoped<IDetalleQuizService, DetalleQuizService>();
 builder.Services.AddScoped<IResultadoQuizService, ResultadoQuizService>();
 
 // RELACIONES
-builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
+// Eliminar esta línea:
+// builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
 
 // S3
 builder.Services.AddScoped<IS3UploaderService, S3UploaderService>();
