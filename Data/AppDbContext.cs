@@ -20,6 +20,7 @@ public class AcademIQDbContext : DbContext
     public DbSet<Quiz> Quizzes { get; set; }
     public DbSet<DetalleQuiz> DetallesQuiz { get; set; }
     public DbSet<ResultadoQuiz> ResultadosQuiz { get; set; }
+    public DbSet<ValoracionQuiz> ValoracionesQuiz { get; set; } // Nueva entidad
 
     public DbSet<Seguimiento> Seguimientos { get; set; }
     public DbSet<ReporteVideo> ReportesVideo { get; set; }
@@ -39,6 +40,11 @@ public class AcademIQDbContext : DbContext
 
         modelBuilder.Entity<Seguimiento>()
             .HasKey(s => new { s.IdAlumno, s.IdProfesor });
+
+        // Configuración para ValoracionQuiz (clave única)
+        modelBuilder.Entity<ValoracionQuiz>()
+            .HasIndex(v => new { v.IdUsuario, v.IdQuiz })
+            .IsUnique();
 
         // Configurar las relaciones entre Seguimiento y Usuario
         modelBuilder.Entity<Seguimiento>()
@@ -62,6 +68,7 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<MarcadorVideo>().ToTable("MarcadorVideo");
         modelBuilder.Entity<Quiz>().ToTable("Quiz");
         modelBuilder.Entity<ResultadoQuiz>().ToTable("ResultadoQuiz");
+        modelBuilder.Entity<ValoracionQuiz>().ToTable("ValoracionQuiz"); // Nueva tabla
         modelBuilder.Entity<Rol>().ToTable("Rol");
         modelBuilder.Entity<Seguimiento>().ToTable("Seguimiento");
         modelBuilder.Entity<Usuario>().ToTable("Usuario");

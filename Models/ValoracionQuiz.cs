@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-public class ResultadoQuiz
+public class ValoracionQuiz
 {
     [Key]
-    public int IdResultado { get; set; }
+    public int IdValoracion { get; set; }
 
     [ForeignKey("Usuario")]
     public int IdUsuario { get; set; }
@@ -14,10 +15,12 @@ public class ResultadoQuiz
     public int IdQuiz { get; set; }
     public Quiz Quiz { get; set; }
 
-    public decimal Puntuacion { get; set; }
+    [Required]
+    [Range(1, 5)]
+    public int Puntuacion { get; set; }
+
+    [MaxLength(500)]
+    public string? Comentario { get; set; }
 
     public DateTime Fecha { get; set; } = DateTime.Now;
-    
-    [Required]
-    public string RespuestasSeleccionadas { get; set; } = string.Empty; // Nuevo campo para almacenar las respuestas en formato JSON
 }

@@ -14,5 +14,8 @@ public class DetalleQuiz
     public string Pregunta { get; set; }
 
     [Required]
-    public string Opciones { get; set; }
+    public string Opciones { get; set; } 
+
+    [Required]
+    public string RespuestasCorrectas { get; set; }
 }
