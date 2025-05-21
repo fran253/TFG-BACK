@@ -42,4 +42,40 @@ public class CursoService : ICursoService
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto)
+    {
+        var nombreExiste = await _context.Cursos
+            .AnyAsync(c => c.Nombre.ToLower() == dto.Nombre.ToLower());
+
+        if (nombreExiste)
+            return null;
+
+        var nuevoCurso = new Curso
+        {
+            Nombre = dto.Nombre,
+            Imagen = dto.Imagen,
+            Descripcion = dto.Descripcion,
+            FechaCreacion = DateTime.UtcNow
+        };
+
+        _context.Cursos.Add(nuevoCurso);
+        await _context.SaveChangesAsync();
+
+        // En este punto, EF ya ha generado el ID, y lo tiene asignado
+        int cursoId = nuevoCurso.IdCurso;
+
+        var usuarioCurso = new UsuarioCurso
+        {
+            IdUsuario = dto.IdUsuarioCreador,
+            IdCurso = cursoId
+        };
+
+        _context.UsuarioCursos.Add(usuarioCurso);
+        await _context.SaveChangesAsync();
+
+        return nuevoCurso;
+    }
+
+
 }

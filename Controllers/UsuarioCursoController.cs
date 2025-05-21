@@ -24,9 +24,15 @@ public class UsuarioCursoController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Crear([FromBody] UsuarioCurso relacion)
+    public async Task<ActionResult> Crear([FromBody] UsuarioCursoDTO dto)
     {
-        await _service.AddAsync(relacion);
+    var nuevo = new UsuarioCurso
+    {
+        IdUsuario = dto.IdUsuario,
+        IdCurso = dto.IdCurso
+    };
+
+        await _service.AddAsync(nuevo);
         return Ok();
     }
 
