@@ -28,10 +28,18 @@ public class ComentarioVideoController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Crear([FromBody] ComentarioVideo comentario)
+    public async Task<ActionResult> Crear([FromBody] ComentarioCrearDTO dto)
     {
-        await _comentarioService.AddAsync(comentario);
-        return CreatedAtAction(nameof(GetById), new { id = comentario.IdComentario }, comentario);
+        var nuevoComentario = new ComentarioVideo
+        {
+            IdUsuario = dto.IdUsuario,
+            IdVideo = dto.IdVideo,
+            Texto = dto.Texto,
+            Fecha = DateTime.UtcNow
+        };
+
+        await _comentarioService.AddAsync(nuevoComentario);
+        return CreatedAtAction(nameof(GetById), new { id = nuevoComentario.IdComentario }, nuevoComentario);
     }
 
     [HttpPut("{id}")]
