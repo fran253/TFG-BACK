@@ -42,4 +42,13 @@ public class CursoService : ICursoService
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario)
+    {
+        return await _context.UsuarioCursos
+            .Where(uc => uc.IdUsuario == idUsuario)
+            .Select(uc => uc.Curso)
+            .Include(c => c.Asignaturas) 
+            .ToListAsync();
+    }
 }

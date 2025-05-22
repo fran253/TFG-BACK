@@ -18,7 +18,7 @@ public class Usuario
     public string Gmail { get; set; }
 
     public string? Telefono { get; set; }
-
+    
     [Required]
     public string Contraseña { get; set; }
 

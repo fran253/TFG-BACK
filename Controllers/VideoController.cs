@@ -52,12 +52,19 @@ public class VideoController : ControllerBase
         return Ok(lista);
     }
 
-    // GET: api/video/usuario/{idUsuario}
+    // GET: api/video/usuario/{idUsuario} - YA EXISTE, ACTUALIZADO CON TRY-CATCH
     [HttpGet("usuario/{idUsuario}")]
-    public async Task<ActionResult<List<Video>>> GetByUsuario(int idUsuario)
+    public async Task<ActionResult<List<Video>>> GetVideosByUsuario(int idUsuario)
     {
-        var lista = await _videoService.GetByUsuarioAsync(idUsuario);
-        return Ok(lista);
+        try
+        {
+            var videos = await _videoService.GetByUsuarioAsync(idUsuario);
+            return Ok(videos);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
     }
 
     // PUT: api/video/{id}
@@ -82,7 +89,7 @@ public class VideoController : ControllerBase
         return NoContent();
     }
 
-    // NUEVO ENDPOINT PRO: api/video/registrar
+    // POST: api/video/registrar
     [HttpPost("registrar")]
     public async Task<ActionResult> RegistrarVideo([FromForm] RegistrarVideoRequest request)
     {

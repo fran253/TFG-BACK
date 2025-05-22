@@ -8,4 +8,5 @@ public interface ICursoService
     Task AddAsync(Curso curso);
     Task UpdateAsync(Curso curso);
     Task DeleteAsync(int id);
+    Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario); 
 }

@@ -124,12 +124,19 @@ public class QuizController : ControllerBase
         return Ok(quizzes);
     }
     
-    // GET: api/Quiz/usuario/{idUsuario}
+    // GET: api/Quiz/usuario/{idUsuario} - ACTUALIZADO CON TRY-CATCH
     [HttpGet("usuario/{idUsuario}")]
     public async Task<ActionResult<List<Quiz>>> GetQuizzesPorUsuario(int idUsuario)
     {
-        var quizzes = await _service.GetQuizzesPorUsuarioAsync(idUsuario);
-        return Ok(quizzes);
+        try
+        {
+            var quizzes = await _service.GetQuizzesPorUsuarioAsync(idUsuario);
+            return Ok(quizzes);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
     }
     
     // GET: api/Quiz/{id}/preguntas/total
