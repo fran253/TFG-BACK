@@ -2,135 +2,25 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TFG_BACK.Models.DTOs;
 
 [Route("api/[controller]")]
 [ApiController]
 public class QuizController : ControllerBase
 {
-    private readonly IQuizService _service;
+    private readonly IQuizService _quizService;
 
-    public QuizController(IQuizService service)
+    public QuizController(IQuizService quizService)
     {
-        _service = service;
+        _quizService = quizService;
     }
 
+    // GET: api/quiz
     [HttpGet]
     public async Task<ActionResult<List<Quiz>>> GetAll()
     {
-        var quizzes = await _service.GetAllAsync();
-        return Ok(quizzes);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Quiz>> GetById(int id)
-    {
-        var quiz = await _service.GetByIdAsync(id);
-        if (quiz == null) return NotFound();
-        return Ok(quiz);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> Crear([FromBody] Quiz quiz)
-    {
-        await _service.AddAsync(quiz);
-        return CreatedAtAction(nameof(GetById), new { id = quiz.IdQuiz }, quiz);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Editar(int id, [FromBody] Quiz quiz)
-    {
-        if (id != quiz.IdQuiz)
-            return BadRequest("El ID no coincide.");
-        await _service.UpdateAsync(quiz);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Eliminar(int id)
-    {
-        await _service.DeleteAsync(id);
-        return NoContent();
-    }
-
-    [HttpGet("curso/{idCurso}")]
-    public async Task<ActionResult<List<Quiz>>> GetByCurso(int idCurso)
-    {
-        var quizzes = await _service.GetByCursoAsync(idCurso);
-        return Ok(quizzes);
-    }
-
-    [HttpGet("asignatura/{idAsignatura}")]
-    public async Task<ActionResult<List<Quiz>>> GetByAsignatura(int idAsignatura)
-    {
-        var quizzes = await _service.GetByAsignaturaAsync(idAsignatura);
-        return Ok(quizzes);
-    }
-
-    [HttpGet("curso/{idCurso}/asignatura/{idAsignatura}")]
-    public async Task<ActionResult<List<Quiz>>> GetByCursoYAsignatura(int idCurso, int idAsignatura)
-    {
-        var quizzes = await _service.GetByCursoYAsignaturaAsync(idCurso, idAsignatura);
-        return Ok(quizzes);
-    }
-
-    // Nuevos endpoints
-    
-    // POST: api/Quiz/completo
-    [HttpPost("completo")]
-    public async Task<ActionResult> CrearQuizCompleto([FromBody] CrearQuizDTO quizDTO)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        
         try
         {
-            var idQuiz = await _service.CrearQuizCompletoAsync(quizDTO);
-            return CreatedAtAction(nameof(GetById), new { id = idQuiz }, new { IdQuiz = idQuiz });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-    
-    // POST: api/Quiz/responder
-    [HttpPost("responder")]
-    public async Task<ActionResult<ResultadoQuizDTO>> ResponderQuiz([FromBody] ResponderQuizDTO respuestasDTO)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-            
-        try
-        {
-            var resultado = await _service.ProcesarRespuestasAsync(respuestasDTO);
-            return Ok(resultado);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-    
-    // GET: api/Quiz/populares
-    [HttpGet("populares")]
-    public async Task<ActionResult<List<Quiz>>> GetQuizzesPopulares([FromQuery] int limite = 10)
-    {
-        var quizzes = await _service.GetQuizzesPopularesAsync(limite);
-        return Ok(quizzes);
-    }
-    
-    // GET: api/Quiz/usuario/{idUsuario} - ACTUALIZADO CON TRY-CATCH
-    [HttpGet("usuario/{idUsuario}")]
-    public async Task<ActionResult<List<Quiz>>> GetQuizzesPorUsuario(int idUsuario)
-    {
-        try
-        {
-            var quizzes = await _service.GetQuizzesPorUsuarioAsync(idUsuario);
+            var quizzes = await _quizService.GetAllAsync();
             return Ok(quizzes);
         }
         catch (Exception ex)
@@ -138,12 +28,110 @@ public class QuizController : ControllerBase
             return StatusCode(500, $"Error interno del servidor: {ex.Message}");
         }
     }
-    
-    // GET: api/Quiz/{id}/preguntas/total
-    [HttpGet("{id}/preguntas/total")]
-    public async Task<ActionResult<int>> GetTotalPreguntas(int id)
+
+    // GET: api/quiz/{id}
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Quiz>> GetById(int id)
     {
-        var total = await _service.GetTotalPreguntasAsync(id);
-        return Ok(total);
+        try
+        {
+            var quiz = await _quizService.GetByIdAsync(id);
+            if (quiz == null)
+                return NotFound($"No se encontró el quiz con ID {id}");
+            
+            return Ok(quiz);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
+    }
+
+    // GET: api/quiz/usuario/{idUsuario}
+    [HttpGet("usuario/{idUsuario}")]
+    public async Task<ActionResult<List<Quiz>>> GetByUsuario(int idUsuario)
+    {
+        try
+        {
+            var quizzes = await _quizService.GetByUsuarioAsync(idUsuario);
+            return Ok(quizzes);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
+    }
+
+    // GET: api/quiz/populares
+    [HttpGet("populares")]
+    public async Task<ActionResult<List<Quiz>>> GetPopulares([FromQuery] int limite = 10)
+    {
+        try
+        {
+            var quizzes = await _quizService.GetQuizzesPopularesAsync(limite);
+            return Ok(quizzes);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
+    }
+
+    // POST: api/quiz
+    [HttpPost]
+    public async Task<ActionResult> Create([FromBody] Quiz quiz)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var idQuiz = await _quizService.AddAsync(quiz);
+            return CreatedAtAction(nameof(GetById), new { id = idQuiz }, new { IdQuiz = idQuiz });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
+    }
+
+    // PUT: api/quiz/{id}
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(int id, [FromBody] Quiz quiz)
+    {
+        try
+        {
+            if (id != quiz.IdQuiz)
+                return BadRequest("El ID no coincide");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _quizService.UpdateAsync(quiz);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
+    }
+
+    // DELETE: api/quiz/{id}
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        try
+        {
+            await _quizService.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
     }
 }

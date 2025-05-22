@@ -83,12 +83,13 @@ builder.Services.AddScoped<IComentarioVideoService, ComentarioVideoService>();
 builder.Services.AddScoped<IFavoritoService, FavoritoService>();
 builder.Services.AddScoped<IReporteVideoService, ReporteVideoService>();
 
-
-// QUIZZES
+// QUIZZES - NUEVO DISEÑO
 builder.Services.AddScoped<IQuizService, QuizService>();
-builder.Services.AddScoped<IDetalleQuizService, DetalleQuizService>();
+builder.Services.AddScoped<IPreguntaService, PreguntaService>();
+builder.Services.AddScoped<IRespuestaService, RespuestaService>();
+builder.Services.AddScoped<IQuizManagementService, QuizManagementService>();
 builder.Services.AddScoped<IResultadoQuizService, ResultadoQuizService>();
-builder.Services.AddScoped<IValoracionQuizService, ValoracionQuizService>(); // Nuevo servicio
+builder.Services.AddScoped<IValoracionQuizService, ValoracionQuizService>();
 
 // RELACIONES
 builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();

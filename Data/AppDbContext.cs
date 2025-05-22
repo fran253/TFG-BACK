@@ -1,3 +1,4 @@
+// Data/AcademIQDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using TuProyecto.Models;
 
@@ -5,6 +6,7 @@ public class AcademIQDbContext : DbContext
 {
     public AcademIQDbContext(DbContextOptions<AcademIQDbContext> options) : base(options) { }
 
+    // Entidades existentes
     public DbSet<Rol> Roles { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Curso> Cursos { get; set; }
@@ -17,18 +19,19 @@ public class AcademIQDbContext : DbContext
     public DbSet<ComentarioVideo> ComentariosVideo { get; set; }
     public DbSet<Favorito> Favoritos { get; set; }
 
+    // NUEVO DISEÑO DE QUIZ
     public DbSet<Quiz> Quizzes { get; set; }
-    public DbSet<DetalleQuiz> DetallesQuiz { get; set; }
+    public DbSet<Pregunta> Preguntas { get; set; }
+    public DbSet<Respuesta> Respuestas { get; set; }
     public DbSet<ResultadoQuiz> ResultadosQuiz { get; set; }
-    public DbSet<ValoracionQuiz> ValoracionesQuiz { get; set; } // Nueva entidad
+    public DbSet<ValoracionQuiz> ValoracionesQuiz { get; set; }
 
     public DbSet<Seguimiento> Seguimientos { get; set; }
     public DbSet<ReporteVideo> ReportesVideo { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configuraciones de claves compuestas
+        // Configuraciones de claves compuestas existentes
         modelBuilder.Entity<UsuarioCurso>()
             .HasKey(uc => new { uc.IdUsuario, uc.IdCurso });
 
@@ -59,21 +62,67 @@ public class AcademIQDbContext : DbContext
             .HasForeignKey(s => s.IdProfesor)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Configurar nombres de tablas para que coincidan con la base de datos
+        // Configuraciones para las nuevas entidades de Quiz
+        modelBuilder.Entity<Quiz>()
+            .HasOne(q => q.Usuario)
+            .WithMany() // Sin navegación inversa
+            .HasForeignKey(q => q.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Pregunta>()
+            .HasOne(p => p.Quiz)
+            .WithMany(q => q.Preguntas)
+            .HasForeignKey(p => p.IdQuiz)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Respuesta>()
+            .HasOne(r => r.Pregunta)
+            .WithMany(p => p.Respuestas)
+            .HasForeignKey(r => r.IdPregunta)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ResultadoQuiz>()
+            .HasOne(r => r.Usuario)
+            .WithMany(u => u.Resultados)
+            .HasForeignKey(r => r.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ResultadoQuiz>()
+            .HasOne(r => r.Quiz)
+            .WithMany(q => q.Resultados)
+            .HasForeignKey(r => r.IdQuiz)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ValoracionQuiz>()
+            .HasOne(v => v.Usuario)
+            .WithMany()
+            .HasForeignKey(v => v.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ValoracionQuiz>()
+            .HasOne(v => v.Quiz)
+            .WithMany(q => q.Valoraciones)
+            .HasForeignKey(v => v.IdQuiz)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configurar nombres de tablas
         modelBuilder.Entity<Asignatura>().ToTable("Asignatura");
         modelBuilder.Entity<ComentarioVideo>().ToTable("ComentarioVideo");
         modelBuilder.Entity<Curso>().ToTable("Curso");
-        modelBuilder.Entity<DetalleQuiz>().ToTable("DetalleQuiz");
         modelBuilder.Entity<Favorito>().ToTable("Favorito");
         modelBuilder.Entity<MarcadorVideo>().ToTable("MarcadorVideo");
-        modelBuilder.Entity<Quiz>().ToTable("Quiz");
-        modelBuilder.Entity<ResultadoQuiz>().ToTable("ResultadoQuiz");
-        modelBuilder.Entity<ValoracionQuiz>().ToTable("ValoracionQuiz"); // Nueva tabla
         modelBuilder.Entity<Rol>().ToTable("Rol");
         modelBuilder.Entity<Seguimiento>().ToTable("Seguimiento");
         modelBuilder.Entity<Usuario>().ToTable("Usuario");
         modelBuilder.Entity<UsuarioAsignatura>().ToTable("Usuario_Asignatura");
         modelBuilder.Entity<UsuarioCurso>().ToTable("Usuario_Curso");
         modelBuilder.Entity<Video>().ToTable("Video");
+        
+        // Nuevas tablas
+        modelBuilder.Entity<Quiz>().ToTable("Quiz");
+        modelBuilder.Entity<Pregunta>().ToTable("Pregunta");
+        modelBuilder.Entity<Respuesta>().ToTable("Respuesta");
+        modelBuilder.Entity<ResultadoQuiz>().ToTable("ResultadoQuiz");
+        modelBuilder.Entity<ValoracionQuiz>().ToTable("ValoracionQuiz");
     }
 }

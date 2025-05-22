@@ -1,9 +1,10 @@
+// Models/QuizDTOs.cs
 using System.ComponentModel.DataAnnotations;
 
 namespace TFG_BACK.Models.DTOs
 {
-    // DTO para crear un nuevo quiz con todas sus preguntas
-    public class CrearQuizDTO
+    // DTO para crear un quiz completo con preguntas y respuestas
+    public class CrearQuizCompletoDTO
     {
         [Required]
         [StringLength(100, MinimumLength = 3)]
@@ -12,32 +13,33 @@ namespace TFG_BACK.Models.DTOs
         public string? Descripcion { get; set; }
         
         [Required]
-        public int IdAsignatura { get; set; }
-        
-        [Required]
         public int IdUsuario { get; set; }
-        
-        public int? IdCurso { get; set; }
         
         [Required]
         [MaxLength(20, ErrorMessage = "Un quiz no puede tener más de 20 preguntas")]
-        public List<PreguntaDTO> Preguntas { get; set; }
+        public List<CrearPreguntaDTO> Preguntas { get; set; }
     }
     
-    // DTO para representar una pregunta con sus opciones
-    public class PreguntaDTO
+    // DTO para crear una pregunta con sus respuestas
+    public class CrearPreguntaDTO
     {
         [Required]
-        public string Pregunta { get; set; }
+        public string Descripcion { get; set; }
         
         [Required]
-        [MaxLength(4, ErrorMessage = "Una pregunta no puede tener más de 4 opciones")]
-        [MinLength(2, ErrorMessage = "Una pregunta debe tener al menos 2 opciones")]
-        public List<string> Opciones { get; set; }
-        
+        [MaxLength(4, ErrorMessage = "Una pregunta no puede tener más de 4 respuestas")]
+        [MinLength(2, ErrorMessage = "Una pregunta debe tener al menos 2 respuestas")]
+        public List<CrearRespuestaDTO> Respuestas { get; set; }
+    }
+    
+    // DTO para crear una respuesta
+    public class CrearRespuestaDTO
+    {
         [Required]
-        [MinLength(1, ErrorMessage = "Debe seleccionar al menos una respuesta correcta")]
-        public List<int> RespuestasCorrectas { get; set; } // Índices de las respuestas correctas (0-based)
+        [MaxLength(255)]
+        public string Texto { get; set; }
+        
+        public bool EsCorrecta { get; set; } = false;
     }
     
     // DTO para responder un quiz
@@ -50,17 +52,45 @@ namespace TFG_BACK.Models.DTOs
         public int IdUsuario { get; set; }
         
         [Required]
-        public List<RespuestaPreguntaDTO> Respuestas { get; set; }
+        public List<RespuestaUsuarioDTO> Respuestas { get; set; }
     }
     
-    // DTO para una respuesta individual a una pregunta
-    public class RespuestaPreguntaDTO
+    // DTO para una respuesta del usuario
+    public class RespuestaUsuarioDTO
     {
         [Required]
-        public int IdDetalleQuiz { get; set; }
+        public int IdPregunta { get; set; }
         
         [Required]
-        public List<int> IndicesSeleccionados { get; set; } // Índices de las opciones seleccionadas
+        public List<int> IdRespuestasSeleccionadas { get; set; }
+    }
+    
+    // DTO para el resultado del quiz
+    public class ResultadoQuizDTO
+    {
+        public int TotalPreguntas { get; set; }
+        public int RespuestasCorrectas { get; set; }
+        public decimal Porcentaje { get; set; }
+        public List<ResultadoDetallePreguntaDTO> Detalles { get; set; }
+    }
+    
+    // DTO para el detalle del resultado por pregunta
+    public class ResultadoDetallePreguntaDTO
+    {
+        public int IdPregunta { get; set; }
+        public string Descripcion { get; set; }
+        public List<RespuestaDetalleDTO> Respuestas { get; set; }
+        public List<int> RespuestasSeleccionadas { get; set; }
+        public bool EsCorrecta { get; set; }
+    }
+    
+    // DTO para mostrar respuesta con información de corrección
+    public class RespuestaDetalleDTO
+    {
+        public int IdRespuesta { get; set; }
+        public string Texto { get; set; }
+        public bool EsCorrecta { get; set; }
+        public bool FueSeleccionada { get; set; }
     }
     
     // DTO para valorar un quiz
@@ -80,23 +110,43 @@ namespace TFG_BACK.Models.DTOs
         public string? Comentario { get; set; }
     }
     
-    // DTO para mostrar el resultado después de responder un quiz
-    public class ResultadoQuizDTO
+    // DTO para actualizar una pregunta específica
+    public class ActualizarPreguntaDTO
     {
-        public int TotalPreguntas { get; set; }
-        public int RespuestasCorrectas { get; set; }
-        public decimal Porcentaje { get; set; }
-        public List<ResultadoDetallePreguntaDTO> ResultadosDetallados { get; set; }
+        [Required]
+        public int IdPregunta { get; set; }
+        
+        [Required]
+        public string Descripcion { get; set; }
+        
+        public int Orden { get; set; }
     }
     
-    // DTO para mostrar el resultado detallado de cada pregunta
-    public class ResultadoDetallePreguntaDTO
+    // DTO para actualizar una respuesta específica
+    public class ActualizarRespuestaDTO
     {
-        public int IdDetalleQuiz { get; set; }
-        public string Pregunta { get; set; }
-        public List<string> Opciones { get; set; }
-        public List<int> RespuestasCorrectas { get; set; }
-        public List<int> RespuestasSeleccionadas { get; set; }
+        [Required]
+        public int IdRespuesta { get; set; }
+        
+        [Required]
+        [MaxLength(255)]
+        public string Texto { get; set; }
+        
         public bool EsCorrecta { get; set; }
+        
+        public int Orden { get; set; }
+    }
+    
+    // DTO para estadísticas de un quiz
+    public class EstadisticasQuizDTO
+    {
+        public int IdQuiz { get; set; }
+        public string Nombre { get; set; }
+        public int TotalPreguntas { get; set; }
+        public int TotalRespuestas { get; set; }
+        public decimal PromedioCalificaciones { get; set; }
+        public double PromedioValoraciones { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public string NombreCreador { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 public class ResultadoQuiz
 {
@@ -16,8 +17,7 @@ public class ResultadoQuiz
 
     public decimal Puntuacion { get; set; }
 
+    public string? RespuestasSeleccionadas { get; set; } // JSON
+
     public DateTime Fecha { get; set; } = DateTime.Now;
-    
-    [Required]
-    public string RespuestasSeleccionadas { get; set; } = string.Empty; // Nuevo campo para almacenar las respuestas en formato JSON
 }
