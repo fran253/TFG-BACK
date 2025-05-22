@@ -18,4 +18,7 @@ public class ComentarioVideo
     public string Texto { get; set; }
 
     public DateTime Fecha { get; set; } = DateTime.Now;
+
+    public int NumeroReportes { get; set; } = 0;
 }
+

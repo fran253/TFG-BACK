@@ -52,4 +52,18 @@ public class UsuarioController : ControllerBase
         await _service.DeleteAsync(id);
         return NoContent();
     }
+
+    [HttpPut("{id}/aceptar-profesor")]
+    public async Task<ActionResult> AceptarComoProfesor(int id)
+    {
+        var usuario = await _service.GetByIdAsync(id);
+        if (usuario == null)
+            return NotFound("Usuario no encontrado");
+
+        usuario.IdRol = 2;
+        await _service.UpdateAsync(usuario);
+
+        return Ok(new { mensaje = "Usuario actualizado a profesor" });
+    }
+
 }

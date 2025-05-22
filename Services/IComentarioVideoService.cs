@@ -8,4 +8,6 @@ public interface IComentarioVideoService
     Task AddAsync(ComentarioVideo comentario);
     Task UpdateAsync(ComentarioVideo comentario);
     Task DeleteAsync(int id);
+    Task<bool> ReportarComentarioAsync(int idComentario);
+    Task<List<ComentarioVideo>> GetReportadosAsync();
 }

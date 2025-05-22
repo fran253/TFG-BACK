@@ -23,6 +23,8 @@ public class AcademIQDbContext : DbContext
 
     public DbSet<Seguimiento> Seguimientos { get; set; }
     public DbSet<ReporteVideo> ReportesVideo { get; set; }
+    public DbSet<PeticionProfesor> PeticionProfesor { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -64,6 +66,14 @@ public class AcademIQDbContext : DbContext
             .WithMany(a => a.UsuarioAsignaturas)
             .HasForeignKey(ua => ua.IdAsignatura)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // ---------------- Relaciones de PeticionProfesor ----------------
+        modelBuilder.Entity<PeticionProfesor>()
+            .HasOne(p => p.Usuario)
+            .WithMany()
+            .HasForeignKey(p => p.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
 
         // ---------------- Relaciones de Seguimiento ----------------
         modelBuilder.Entity<Seguimiento>()
