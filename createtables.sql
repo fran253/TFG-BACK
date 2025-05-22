@@ -11,14 +11,6 @@ CREATE TABLE Dificultad (
     descripcion TEXT
 );
 
--- Preferencias visuales del usuario
-CREATE TABLE Preferencias (
-    idPreferencia INT PRIMARY KEY AUTO_INCREMENT,
-    colorFondo VARCHAR(100),
-    colorBordes VARCHAR(100),
-    imagenFondo VARCHAR(255)
-);
-
 -- Usuarios
 CREATE TABLE Usuario (
     idUsuario INT PRIMARY KEY AUTO_INCREMENT,
@@ -45,7 +37,7 @@ CREATE TABLE Seguimiento (
 
 -- Cursos
 CREATE TABLE Curso (
-    idCurso INT PRIMARY KEY ,
+    idCurso INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(255) NOT NULL,
     imagen TEXT,
     descripcion TEXT,
@@ -134,7 +126,7 @@ CREATE TABLE ComentarioVideo (
 
 -- Quizzes creados por profesores
 CREATE TABLE Quiz (
-    idQuiz INT PRIMARY KEY,
+    idQuiz INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
     duracionPromedio VARCHAR(50),

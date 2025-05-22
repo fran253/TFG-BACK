@@ -47,4 +47,16 @@ public class CursoController : ControllerBase
         await _service.DeleteAsync(id);
         return NoContent();
     }
+    
+    [HttpPost("crear")]
+    public async Task<ActionResult> CrearCurso([FromBody] CursoCrearDTO dto)
+    {
+        var curso = await _service.AddCursoConUsuarioAsync(dto);
+
+        if (curso == null)
+            return BadRequest("Ya existe un curso con ese nombre.");
+
+        return CreatedAtAction(nameof(GetById), new { id = curso.IdCurso }, curso);
+    }
+
 }

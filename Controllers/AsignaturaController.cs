@@ -44,10 +44,20 @@ public class AsignaturaController : ControllerBase
 
     // POST: api/asignatura
     [HttpPost]
-    public async Task<ActionResult> Crear([FromBody] Asignatura asignatura)
+    public async Task<ActionResult> Crear([FromBody] AsignaturaCrearDTO dto)
     {
-        await _asignaturaService.AddAsync(asignatura);
-        return CreatedAtAction(nameof(GetById), new { id = asignatura.IdAsignatura }, asignatura);
+        var nuevaAsignatura = new Asignatura
+        {
+            Nombre = dto.Nombre,
+            Imagen = dto.Imagen,
+            Descripcion = dto.Descripcion,
+            IdCurso = dto.IdCurso,
+            FechaCreacion = DateTime.UtcNow
+        };
+
+        await _asignaturaService.AddAsync(nuevaAsignatura);
+
+        return CreatedAtAction(nameof(GetById), new { id = nuevaAsignatura.IdAsignatura }, nuevaAsignatura);
     }
 
     // PUT: api/asignatura/{id}
@@ -72,4 +82,5 @@ public class AsignaturaController : ControllerBase
         await _asignaturaService.DeleteAsync(id);
         return NoContent();
     }
+    
 }

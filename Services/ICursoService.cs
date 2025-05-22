@@ -8,4 +8,6 @@ public interface ICursoService
     Task AddAsync(Curso curso);
     Task UpdateAsync(Curso curso);
     Task DeleteAsync(int id);
+    Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto);
+
 }

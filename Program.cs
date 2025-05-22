@@ -101,6 +101,9 @@ builder.Services.AddScoped<IComentarioVideoService, ComentarioVideoService>();
 builder.Services.AddScoped<IFavoritoService, FavoritoService>();
 builder.Services.AddScoped<IReporteVideoService, ReporteVideoService>();
 
+// PETICIONES
+builder.Services.AddScoped<IPeticionProfesorService, PeticionProfesorService>();
+
 
 // QUIZZES
 builder.Services.AddScoped<IQuizService, QuizService>();
