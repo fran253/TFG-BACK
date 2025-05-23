@@ -7,5 +7,7 @@ public interface IUsuarioService
     Task UpdateAsync(Usuario usuario);
     Task DeleteAsync(int id);
     Task<Usuario?> GetByTokenAsync(string token);    //TOKEN
+    Task<List<RolEstadisticaDTO>> ObtenerEstadisticasPorRol(); //funcion para el grafico
+
 
 }

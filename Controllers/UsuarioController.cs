@@ -66,4 +66,11 @@ public class UsuarioController : ControllerBase
         return Ok(new { mensaje = "Usuario actualizado a profesor" });
     }
 
+    [HttpGet("estadisticas-roles")]
+    public async Task<ActionResult<List<RolEstadisticaDTO>>> GetUsuariosPorRol()
+    {
+        var resultado = await _service.ObtenerEstadisticasPorRol();
+        return Ok(resultado);
+    }
+
 }

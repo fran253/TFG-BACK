@@ -58,4 +58,18 @@ public class UsuarioService : IUsuarioService
             .FirstOrDefaultAsync(u => u.Token == token);
     }
 
+    //funcion para el grafico
+    public async Task<List<RolEstadisticaDTO>> ObtenerEstadisticasPorRol()
+    {
+        return await _context.Usuarios
+            .Include(u => u.Rol)
+            .GroupBy(u => u.Rol.Nombre)
+            .Select(g => new RolEstadisticaDTO
+            {
+                Rol = g.Key,
+                Total = g.Count()
+            })
+            .ToListAsync();
+    }
+
 }
