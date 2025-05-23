@@ -10,9 +10,11 @@ public class VideoController : ControllerBase
     private readonly IVideoService _videoService;
     private readonly IMarcadorVideoService _marcadorService;
     private readonly IS3UploaderService _s3UploaderService;
+    private readonly IUsuarioService _usuarioService;
 
-    public VideoController(IVideoService videoService, IMarcadorVideoService marcadorService, IS3UploaderService s3UploaderService)
+    public VideoController(IVideoService videoService, IMarcadorVideoService marcadorService, IS3UploaderService s3UploaderService, IUsuarioService usuarioService)
     {
+        _usuarioService = usuarioService;
         _videoService = videoService;
         _marcadorService = marcadorService;
         _s3UploaderService = s3UploaderService;
@@ -107,6 +109,26 @@ public class VideoController : ControllerBase
 
         return Ok(new { idVideo = idNuevoVideo });
     }
+
+    [HttpDelete("borrar-propio/{idVideo}")]
+    public async Task<IActionResult> BorrarVideo(int idVideo)
+    {
+        var video = await _videoService.GetByIdAsync(idVideo);
+        if (video == null)
+            return NotFound("Vídeo no encontrado");
+
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var usuario = await _usuarioService.GetByTokenAsync(token);
+        if (usuario == null)
+            return Unauthorized("Token inválido");
+
+        if (video.IdUsuario != usuario.IdUsuario)
+            return Forbid("No puedes borrar un vídeo que no es tuyo");
+
+        await _videoService.DeleteAsync(idVideo);
+        return NoContent();
+    }
+
 
     // GET: api/video/reportados
     [HttpGet("reportados")]

@@ -6,4 +6,6 @@ public interface IUsuarioService
     Task AddAsync(Usuario usuario);
     Task UpdateAsync(Usuario usuario);
     Task DeleteAsync(int id);
+    Task<Usuario?> GetByTokenAsync(string token);    //TOKEN
+
 }

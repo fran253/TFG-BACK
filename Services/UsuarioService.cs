@@ -50,4 +50,12 @@ public class UsuarioService : IUsuarioService
             await _context.SaveChangesAsync();
         }
     }
+    //TOKEN
+    public async Task<Usuario?> GetByTokenAsync(string token)
+    {
+        return await _context.Usuarios
+            .Include(u => u.Rol)
+            .FirstOrDefaultAsync(u => u.Token == token);
+    }
+
 }
