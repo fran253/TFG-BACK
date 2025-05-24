@@ -43,13 +43,30 @@ public class UsuarioService : IUsuarioService
 
     public async Task DeleteAsync(int id)
     {
-        var u = await _context.Usuarios.FindAsync(id);
-        if (u != null)
+        var usuario = await _context.Usuarios.FindAsync(id);
+        if (usuario != null)
         {
-            _context.Usuarios.Remove(u);
+            // 1. Eliminar comentarios
+            var comentarios = _context.ComentariosVideo.Where(c => c.IdUsuario == id);
+            _context.ComentariosVideo.RemoveRange(comentarios);
+
+            // 2. Eliminar videos
+            var videos = _context.Videos.Where(v => v.IdUsuario == id);
+            _context.Videos.RemoveRange(videos);
+
+            // 3. Eliminar favoritos, reportes, relaciones, etc.
+            var favoritos = _context.Favoritos.Where(f => f.IdUsuario == id);
+            _context.Favoritos.RemoveRange(favoritos);
+
+            var usuarioCursos = _context.UsuarioCursos.Where(uc => uc.IdUsuario == id);
+            _context.UsuarioCursos.RemoveRange(usuarioCursos);
+
+            // 4. Finalmente, eliminar el usuario
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
         }
     }
+
     //TOKEN
     public async Task<Usuario?> GetByTokenAsync(string token)
     {

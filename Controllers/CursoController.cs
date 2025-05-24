@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 public class CursoController : ControllerBase
 {
     private readonly ICursoService _service;
+    private readonly IUsuarioService _usuarioService;
 
-    public CursoController(ICursoService service)
+    public CursoController(ICursoService service, IUsuarioService usuarioService)
     {
         _service = service;
+        _usuarioService = usuarioService;
     }
 
     [HttpGet]
@@ -47,16 +49,21 @@ public class CursoController : ControllerBase
         await _service.DeleteAsync(id);
         return NoContent();
     }
-    
+
     [HttpPost("crear")]
     public async Task<ActionResult> CrearCurso([FromBody] CursoCrearDTO dto)
     {
-        var curso = await _service.AddCursoConUsuarioAsync(dto);
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+        var usuario = await _usuarioService.GetByTokenAsync(token);
+        if (usuario == null)
+            return Unauthorized("Token inválido.");
+
+        var curso = await _service.AddCursoConUsuarioAsync(dto, usuario.IdUsuario);
 
         if (curso == null)
             return BadRequest("Ya existe un curso con ese nombre.");
 
         return CreatedAtAction(nameof(GetById), new { id = curso.IdCurso }, curso);
     }
-
 }
