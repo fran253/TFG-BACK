@@ -44,12 +44,11 @@ public class AuthController : ControllerBase
         // Obtener el usuario completo (con su ID generado)
         var usuarioCreado = await _usuarioService.GetByGmailAsync(registro.Gmail);
         
-        // Crear un token simple (podría ser un GUID, por ejemplo)
+       // Crear y guardar el token
         string token = Guid.NewGuid().ToString();
-        
-        // En una aplicación real, deberías almacenar este token en algún lugar (base de datos, caché, etc.)
-        // para validarlo posteriormente
-        
+        usuarioCreado.Token = token;
+        await _usuarioService.UpdateAsync(usuarioCreado); // Asegúrate de tener este método
+
         return Ok(new AuthResponseDTO
         {
             IdUsuario = usuarioCreado.IdUsuario,
@@ -57,6 +56,7 @@ public class AuthController : ControllerBase
             Token = token,
             Rol = usuarioCreado.Rol?.Nombre ?? "Usuario"
         });
+
     }
     
     [HttpPost("login")]
@@ -76,8 +76,11 @@ public class AuthController : ControllerBase
             return Unauthorized("Credenciales inválidas");
         }
         
-        // Crear un token simple (podría ser un GUID, por ejemplo)
+        // Crear y guardar el token
         string token = Guid.NewGuid().ToString();
+        usuario.Token = token;
+        await _usuarioService.UpdateAsync(usuario); // Asegúrate de tener este método
+
         
         // En una aplicación real, deberías almacenar este token en algún lugar (base de datos, caché, etc.)
         // para validarlo posteriormente

@@ -7,13 +7,19 @@ using System.Threading.Tasks;
 public class AsignaturaController : ControllerBase
 {
     private readonly IAsignaturaService _asignaturaService;
+    private readonly ICursoService _cursoService;
+    private readonly IUsuarioService _usuarioService;
 
-    public AsignaturaController(IAsignaturaService asignaturaService)
+    public AsignaturaController(
+        IAsignaturaService asignaturaService,
+        ICursoService cursoService,
+        IUsuarioService usuarioService)
     {
         _asignaturaService = asignaturaService;
+        _cursoService = cursoService;
+        _usuarioService = usuarioService;
     }
 
-    // GET: api/asignatura
     [HttpGet]
     public async Task<ActionResult<List<Asignatura>>> GetAll()
     {
@@ -21,35 +27,40 @@ public class AsignaturaController : ControllerBase
         return Ok(asignaturas);
     }
 
-    // GET: api/asignatura/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<Asignatura>> GetById(int id)
     {
         var asignatura = await _asignaturaService.GetByIdAsync(id);
-        if (asignatura == null)
-            return NotFound();
-
-        return Ok(asignatura);
+        return asignatura == null ? NotFound() : Ok(asignatura);
     }
 
-    // GET: api/asignatura/curso/{idCurso}
     [HttpGet("curso/{idCurso}")]
     public async Task<ActionResult<List<Asignatura>>> GetByCurso(int idCurso)
     {
         var lista = await _asignaturaService.GetByIdCursoAsync(idCurso);
-        if (lista == null || lista.Count == 0)
-            return NotFound("No se encontraron asignaturas para este curso.");
-        return Ok(lista);
+        return lista == null || lista.Count == 0
+            ? NotFound("No se encontraron asignaturas para este curso.")
+            : Ok(lista);
     }
 
-    // POST: api/asignatura
     [HttpPost]
     public async Task<ActionResult> Crear([FromBody] AsignaturaCrearDTO dto)
     {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var usuario = await _usuarioService.GetByTokenAsync(token);
+        if (usuario == null)
+            return Unauthorized("Token inválido.");
+
+        var curso = await _cursoService.GetByIdAsync(dto.IdCurso);
+        if (curso == null)
+            return NotFound("El curso no existe.");
+
+        if (curso.IdUsuario != usuario.IdUsuario)
+            return Forbid("No tienes permiso para añadir asignaturas a este curso.");
+
         var nuevaAsignatura = new Asignatura
         {
             Nombre = dto.Nombre,
-            Imagen = dto.Imagen,
             Descripcion = dto.Descripcion,
             IdCurso = dto.IdCurso,
             FechaCreacion = DateTime.UtcNow
@@ -60,7 +71,6 @@ public class AsignaturaController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = nuevaAsignatura.IdAsignatura }, nuevaAsignatura);
     }
 
-    // PUT: api/asignatura/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult> Editar(int id, [FromBody] Asignatura asignatura)
     {
@@ -71,7 +81,6 @@ public class AsignaturaController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/asignatura/{id}
     [HttpDelete("{id}")]
     public async Task<ActionResult> Eliminar(int id)
     {
@@ -82,5 +91,4 @@ public class AsignaturaController : ControllerBase
         await _asignaturaService.DeleteAsync(id);
         return NoContent();
     }
-    
 }

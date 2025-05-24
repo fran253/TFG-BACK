@@ -43,7 +43,7 @@ public class CursoService : ICursoService
         }
     }
 
-    public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto)
+    public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario)
     {
         var nombreExiste = await _context.Cursos
             .AnyAsync(c => c.Nombre.ToLower() == dto.Nombre.ToLower());
@@ -56,26 +56,27 @@ public class CursoService : ICursoService
             Nombre = dto.Nombre,
             Imagen = dto.Imagen,
             Descripcion = dto.Descripcion,
-            FechaCreacion = DateTime.UtcNow
+            FechaCreacion = DateTime.UtcNow,
+            IdUsuario = idUsuario
         };
 
         _context.Cursos.Add(nuevoCurso);
         await _context.SaveChangesAsync();
 
-        // En este punto, EF ya ha generado el ID, y lo tiene asignado
-        int cursoId = nuevoCurso.IdCurso;
-
-        var usuarioCurso = new UsuarioCurso
-        {
-            IdUsuario = dto.IdUsuarioCreador,
-            IdCurso = cursoId
-        };
-
-        _context.UsuarioCursos.Add(usuarioCurso);
-        await _context.SaveChangesAsync();
-
         return nuevoCurso;
     }
-
-
+    public async Task<List<CursoVideosDTO>> GetTopCursosConMasVideosAsync(int cantidad)
+    {
+        return await _context.Videos
+            .Where(v => v.IdCurso != null)
+            .GroupBy(v => new { v.Curso.IdCurso, v.Curso.Nombre })
+            .Select(g => new CursoVideosDTO
+            {
+                NombreCurso = g.Key.Nombre,
+                TotalVideos = g.Count()
+            })
+            .OrderByDescending(c => c.TotalVideos)
+            .Take(cantidad)
+            .ToListAsync();
+    }
 }

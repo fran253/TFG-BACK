@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 public class CursoController : ControllerBase
 {
     private readonly ICursoService _service;
+    private readonly IUsuarioService _usuarioService;
+    private readonly ICursoService _cursoService;
 
-    public CursoController(ICursoService service)
+    public CursoController(ICursoService service, IUsuarioService usuarioService, ICursoService cursoService)
     {
         _service = service;
+        _usuarioService = usuarioService;
+        _cursoService = cursoService;
     }
 
     [HttpGet]
@@ -47,16 +51,27 @@ public class CursoController : ControllerBase
         await _service.DeleteAsync(id);
         return NoContent();
     }
-    
+
     [HttpPost("crear")]
     public async Task<ActionResult> CrearCurso([FromBody] CursoCrearDTO dto)
     {
-        var curso = await _service.AddCursoConUsuarioAsync(dto);
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+        var usuario = await _usuarioService.GetByTokenAsync(token);
+        if (usuario == null)
+            return Unauthorized("Token inválido.");
+
+        var curso = await _service.AddCursoConUsuarioAsync(dto, usuario.IdUsuario);
 
         if (curso == null)
             return BadRequest("Ya existe un curso con ese nombre.");
 
         return CreatedAtAction(nameof(GetById), new { id = curso.IdCurso }, curso);
     }
-
+    [HttpGet("top-cursos-videos")]
+    public async Task<ActionResult<List<CursoVideosDTO>>> GetTopCursosConMasVideos()
+    {
+        var resultado = await _cursoService.GetTopCursosConMasVideosAsync(4);
+        return Ok(resultado);
+    }
 }

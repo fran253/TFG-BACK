@@ -26,7 +26,11 @@ public class Usuario
     public int IdRol { get; set; }
 
     [JsonIgnore]
-    public Rol? Rol { get; set; } 
+    public Rol? Rol { get; set; }
+
+    [JsonIgnore]
+    public string? Token { get; set; }
+
 
 
     [JsonIgnore]

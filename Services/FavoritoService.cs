@@ -21,12 +21,18 @@ public class FavoritoService : IFavoritoService
             .Include(v => v.Usuario)
             .ToListAsync();
     }
-
+    
     public async Task AddAsync(Favorito favorito)
     {
-        _context.Favoritos.Add(favorito);
+        _context.Favoritos.Add(new Favorito
+        {
+            IdUsuario = favorito.IdUsuario,
+            IdVideo = favorito.IdVideo
+        });
+
         await _context.SaveChangesAsync();
     }
+
 
     public async Task DeleteAsync(int idUsuario, int idVideo)
     {

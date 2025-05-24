@@ -25,7 +25,6 @@ public class AcademIQDbContext : DbContext
     public DbSet<ReporteVideo> ReportesVideo { get; set; }
     public DbSet<PeticionProfesor> PeticionProfesor { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // ---------------- Claves compuestas ----------------
@@ -67,13 +66,25 @@ public class AcademIQDbContext : DbContext
             .HasForeignKey(ua => ua.IdAsignatura)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // ---------------- Relaciones de Favorito ----------------
+        modelBuilder.Entity<Favorito>()
+            .HasOne(f => f.Usuario)
+            .WithMany()
+            .HasForeignKey(f => f.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Favorito>()
+            .HasOne(f => f.Video)
+            .WithMany()
+            .HasForeignKey(f => f.IdVideo)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // ---------------- Relaciones de PeticionProfesor ----------------
         modelBuilder.Entity<PeticionProfesor>()
             .HasOne(p => p.Usuario)
             .WithMany()
             .HasForeignKey(p => p.IdUsuario)
             .OnDelete(DeleteBehavior.Cascade);
-
 
         // ---------------- Relaciones de Seguimiento ----------------
         modelBuilder.Entity<Seguimiento>()
