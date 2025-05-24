@@ -8,11 +8,13 @@ public class CursoController : ControllerBase
 {
     private readonly ICursoService _service;
     private readonly IUsuarioService _usuarioService;
+    private readonly ICursoService _cursoService;
 
-    public CursoController(ICursoService service, IUsuarioService usuarioService)
+    public CursoController(ICursoService service, IUsuarioService usuarioService, ICursoService cursoService)
     {
         _service = service;
         _usuarioService = usuarioService;
+        _cursoService = cursoService;
     }
 
     [HttpGet]
@@ -65,5 +67,11 @@ public class CursoController : ControllerBase
             return BadRequest("Ya existe un curso con ese nombre.");
 
         return CreatedAtAction(nameof(GetById), new { id = curso.IdCurso }, curso);
+    }
+    [HttpGet("top-cursos-videos")]
+    public async Task<ActionResult<List<CursoVideosDTO>>> GetTopCursosConMasVideos()
+    {
+        var resultado = await _cursoService.GetTopCursosConMasVideosAsync(4);
+        return Ok(resultado);
     }
 }

@@ -65,4 +65,18 @@ public class CursoService : ICursoService
 
         return nuevoCurso;
     }
+    public async Task<List<CursoVideosDTO>> GetTopCursosConMasVideosAsync(int cantidad)
+    {
+        return await _context.Videos
+            .Where(v => v.IdCurso != null)
+            .GroupBy(v => new { v.Curso.IdCurso, v.Curso.Nombre })
+            .Select(g => new CursoVideosDTO
+            {
+                NombreCurso = g.Key.Nombre,
+                TotalVideos = g.Count()
+            })
+            .OrderByDescending(c => c.TotalVideos)
+            .Take(cantidad)
+            .ToListAsync();
+    }
 }
