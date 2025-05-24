@@ -1,21 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TFG_BACK.Services; 
 
 [Route("api/[controller]")]
 [ApiController]
 public class CursoController : ControllerBase
 {
+
     private readonly ICursoService _service;
     private readonly IUsuarioService _usuarioService;
     private readonly ICursoService _cursoService;
+    private readonly IS3UploaderService _s3UploaderService; 
 
-    public CursoController(ICursoService service, IUsuarioService usuarioService, ICursoService cursoService)
+    public CursoController(ICursoService service, IUsuarioService usuarioService, ICursoService cursoService, IS3UploaderService s3UploaderService) 
     {
         _service = service;
         _usuarioService = usuarioService;
         _cursoService = cursoService;
+        _s3UploaderService = s3UploaderService; 
     }
+    
 
     [HttpGet]
     public async Task<ActionResult<List<Curso>>> GetAll()
@@ -53,21 +58,23 @@ public class CursoController : ControllerBase
     }
 
     [HttpPost("crear")]
-    public async Task<ActionResult> CrearCurso([FromBody] CursoCrearDTO dto)
+    public async Task<ActionResult> CrearCurso([FromForm] CursoCrearDTO dto)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        // Subir imagen a S3 si existe
+        string urlImagen = null;
+        if (dto.Imagen != null)
+        {
+            urlImagen = await _s3UploaderService.SubirArchivoAsync(dto.Imagen, "cursos");
+        }
 
-        var usuario = await _usuarioService.GetByTokenAsync(token);
-        if (usuario == null)
-            return Unauthorized("Token inválido.");
-
-        var curso = await _service.AddCursoConUsuarioAsync(dto, usuario.IdUsuario);
+        var curso = await _service.AddCursoConUsuarioAsync(dto, dto.IdUsuario, urlImagen);
 
         if (curso == null)
             return BadRequest("Ya existe un curso con ese nombre.");
 
         return CreatedAtAction(nameof(GetById), new { id = curso.IdCurso }, curso);
     }
+
     [HttpGet("top-cursos-videos")]
     public async Task<ActionResult<List<CursoVideosDTO>>> GetTopCursosConMasVideos()
     {

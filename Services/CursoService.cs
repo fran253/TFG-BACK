@@ -43,7 +43,7 @@ public class CursoService : ICursoService
         }
     }
 
-    public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario)
+    public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario, string? urlImagen = null)
     {
         var nombreExiste = await _context.Cursos
             .AnyAsync(c => c.Nombre.ToLower() == dto.Nombre.ToLower());
@@ -54,7 +54,7 @@ public class CursoService : ICursoService
         var nuevoCurso = new Curso
         {
             Nombre = dto.Nombre,
-            Imagen = dto.Imagen,
+            Imagen = urlImagen, 
             Descripcion = dto.Descripcion,
             FechaCreacion = DateTime.UtcNow,
             IdUsuario = idUsuario
