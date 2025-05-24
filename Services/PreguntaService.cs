@@ -1,7 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 public class PreguntaService : IPreguntaService
 {
@@ -17,7 +14,6 @@ public class PreguntaService : IPreguntaService
     {
         return await _context.Preguntas
             .Where(p => p.IdQuiz == idQuiz)
-            .Include(p => p.Respuestas.OrderBy(r => r.Orden))
             .OrderBy(p => p.Orden)
             .ToListAsync();
     }
@@ -25,8 +21,6 @@ public class PreguntaService : IPreguntaService
     public async Task<Pregunta?> GetByIdAsync(int id)
     {
         return await _context.Preguntas
-            .Include(p => p.Respuestas.OrderBy(r => r.Orden))
-            .Include(p => p.Quiz)
             .FirstOrDefaultAsync(p => p.IdPregunta == id);
     }
 

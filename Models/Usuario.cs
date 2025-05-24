@@ -1,3 +1,4 @@
+// Models/Usuario.cs (sin navegación a Quizzes)
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -28,7 +29,6 @@ public class Usuario
     [JsonIgnore]
     public Rol? Rol { get; set; } 
 
-
     [JsonIgnore]
     public ICollection<Seguimiento> Seguidores { get; set; }
 
@@ -50,9 +50,7 @@ public class Usuario
     [JsonIgnore]
     public ICollection<Favorito> Favoritos { get; set; }
 
-    [JsonIgnore]
-    public ICollection<Quiz> Quizzes { get; set; }
-
+    // SIN QUIZZES - se eliminó la línea
     [JsonIgnore]
     public ICollection<ResultadoQuiz> Resultados { get; set; }
 
@@ -65,7 +63,7 @@ public class Usuario
         Videos = new List<Video>();
         Comentarios = new List<ComentarioVideo>();
         Favoritos = new List<Favorito>();
-        Quizzes = new List<Quiz>();
+        // Quizzes = new List<Quiz>(); // ELIMINADO
         Resultados = new List<ResultadoQuiz>();
     }
 }

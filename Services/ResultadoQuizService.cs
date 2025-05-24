@@ -1,7 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 public class ResultadoQuizService : IResultadoQuizService
 {
@@ -14,17 +11,12 @@ public class ResultadoQuizService : IResultadoQuizService
 
     public async Task<List<ResultadoQuiz>> GetAllAsync()
     {
-        return await _context.ResultadosQuiz
-            .Include(r => r.Usuario)
-            .Include(r => r.Quiz)
-            .ToListAsync();
+        return await _context.ResultadosQuiz.ToListAsync();
     }
 
     public async Task<ResultadoQuiz?> GetByIdAsync(int id)
     {
         return await _context.ResultadosQuiz
-            .Include(r => r.Usuario)
-            .Include(r => r.Quiz)
             .FirstOrDefaultAsync(r => r.IdResultado == id);
     }
 
@@ -32,7 +24,7 @@ public class ResultadoQuizService : IResultadoQuizService
     {
         return await _context.ResultadosQuiz
             .Where(r => r.IdUsuario == idUsuario)
-            .Include(r => r.Quiz)
+            .OrderByDescending(r => r.Fecha)
             .ToListAsync();
     }
 
@@ -40,7 +32,7 @@ public class ResultadoQuizService : IResultadoQuizService
     {
         return await _context.ResultadosQuiz
             .Where(r => r.IdQuiz == idQuiz)
-            .Include(r => r.Usuario)
+            .OrderByDescending(r => r.Fecha)
             .ToListAsync();
     }
 

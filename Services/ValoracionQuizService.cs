@@ -1,8 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 public class ValoracionQuizService : IValoracionQuizService
 {
@@ -17,7 +13,6 @@ public class ValoracionQuizService : IValoracionQuizService
     {
         return await _context.ValoracionesQuiz
             .Where(v => v.IdQuiz == idQuiz)
-            .Include(v => v.Usuario)
             .OrderByDescending(v => v.Fecha)
             .ToListAsync();
     }

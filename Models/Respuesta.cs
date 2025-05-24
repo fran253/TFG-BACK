@@ -1,17 +1,12 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 public class Respuesta
 {
     [Key]
     public int IdRespuesta { get; set; }
 
-    [ForeignKey("Pregunta")]
+    [Required]
     public int IdPregunta { get; set; }
-    
-    [JsonIgnore]
-    public Pregunta Pregunta { get; set; }
 
     [Required]
     [MaxLength(255)]
@@ -20,4 +15,6 @@ public class Respuesta
     public bool EsCorrecta { get; set; } = false;
 
     public int Orden { get; set; } = 1;
+
+    // NO propiedades de navegación por ahora
 }

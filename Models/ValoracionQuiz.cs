@@ -1,19 +1,15 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 public class ValoracionQuiz
 {
     [Key]
     public int IdValoracion { get; set; }
 
-    [ForeignKey("Usuario")]
+    [Required]
     public int IdUsuario { get; set; }
-    public Usuario Usuario { get; set; }
 
-    [ForeignKey("Quiz")]
+    [Required]
     public int IdQuiz { get; set; }
-    public Quiz Quiz { get; set; }
 
     [Required]
     [Range(1, 5)]
@@ -23,4 +19,5 @@ public class ValoracionQuiz
     public string? Comentario { get; set; }
 
     public DateTime Fecha { get; set; } = DateTime.Now;
+
 }

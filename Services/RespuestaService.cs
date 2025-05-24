@@ -1,7 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 public class RespuestaService : IRespuestaService
 {
@@ -24,7 +21,6 @@ public class RespuestaService : IRespuestaService
     public async Task<Respuesta?> GetByIdAsync(int id)
     {
         return await _context.Respuestas
-            .Include(r => r.Pregunta)
             .FirstOrDefaultAsync(r => r.IdRespuesta == id);
     }
 

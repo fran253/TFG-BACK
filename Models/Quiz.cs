@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 public class Quiz
 {
@@ -13,19 +11,11 @@ public class Quiz
 
     public string? Descripcion { get; set; }
 
-    [ForeignKey("Usuario")]
+    [Required]
     public int IdUsuario { get; set; }
-    
-    [JsonIgnore]
-    public Usuario Usuario { get; set; }
 
     public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
-    public ICollection<Pregunta> Preguntas { get; set; } = new List<Pregunta>();
-    
-    [JsonIgnore]
-    public ICollection<ResultadoQuiz> Resultados { get; set; } = new List<ResultadoQuiz>();
-    
-    [JsonIgnore]
-    public ICollection<ValoracionQuiz> Valoraciones { get; set; } = new List<ValoracionQuiz>();
+    // NO PROPIEDADES DE NAVEGACIÓN POR AHORA
+    // Entity Framework las está interpretando mal
 }
