@@ -1,0 +1,23 @@
+[
+  {
+    "tipo": "curso",
+    "nombre": "Desarrollo Web",
+    "asignaturas": ["HTML", "CSS", "JavaScript"]
+  },
+  {
+    "tipo": "asignatura",
+    "nombre": "HTML",
+    "descripcion": "Aprende a estructurar páginas web con etiquetas semánticas."
+  },
+  {
+    "tipo": "video",
+    "titulo": "Etiquetas HTML básicas",
+    "descripcion": "Explicación de etiquetas <p>, <h1>, <div>, etc.",
+    "asignatura": "HTML"
+  },
+  {
+    "tipo": "faq",
+    "pregunta": "¿Cómo me registro?",
+    "respuesta": "Haz clic en el botón 'Registrarse' en la esquina superior y completa el formulario."
+  }
+]

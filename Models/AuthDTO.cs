@@ -35,11 +35,13 @@ namespace TFG_BACK.Models.DTOs
         public string Contraseña { get; set; }
     }
 
-    public class AuthResponseDTO
-    {
-        public int IdUsuario { get; set; }
-        public string Nombre { get; set; }
-        public string Token { get; set; }
-        public string Rol { get; set; }
-    }
+public class AuthResponseDTO
+{
+    public int IdUsuario { get; set; }
+    public string Nombre { get; set; }
+    public string Token { get; set; }
+    public string Rol { get; set; }
+    public int IdRol { get; set; }
+}
+
 }
