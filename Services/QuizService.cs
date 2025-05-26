@@ -1,37 +1,124 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using TFG_BACK.Models.DTOs;
 
 public class QuizService : IQuizService
 {
     private readonly AcademIQDbContext _context;
+    private const int MAX_QUIZZES_POR_USUARIO = 50;
 
     public QuizService(AcademIQDbContext context)
     {
         _context = context;
     }
 
+    public async Task<List<QuizResponseDto>> GetAllWithUserInfoAsync()
+    {
+        var quizzes = await (from q in _context.Quizzes
+                           join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
+                           select new QuizResponseDto
+                           {
+                               IdQuiz = q.IdQuiz,
+                               Nombre = q.Nombre,
+                               Descripcion = q.Descripcion,
+                               IdUsuario = q.IdUsuario,
+                               NombreUsuario = u.Nombre,
+                               EmailUsuario = u.Gmail,
+                               FechaCreacion = q.FechaCreacion,
+                               TotalPreguntas = 0 // Por ahora 0, después contaremos las preguntas reales
+                           }).OrderByDescending(q => q.FechaCreacion)
+                           .ToListAsync();
+
+        return quizzes;
+    }
+
     public async Task<List<Quiz>> GetAllAsync()
     {
         return await _context.Quizzes
-            .Include(q => q.Asignatura)
-            .Include(q => q.Usuario)
+            .OrderByDescending(q => q.FechaCreacion)
             .ToListAsync();
+    }
+
+    public async Task<QuizResponseDto?> GetByIdWithUserInfoAsync(int id)
+    {
+        var quiz = await (from q in _context.Quizzes
+                         join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
+                         where q.IdQuiz == id
+                         select new QuizResponseDto
+                         {
+                             IdQuiz = q.IdQuiz,
+                             Nombre = q.Nombre,
+                             Descripcion = q.Descripcion,
+                             IdUsuario = q.IdUsuario,
+                             NombreUsuario = u.Nombre,
+                             EmailUsuario = u.Gmail,
+                             FechaCreacion = q.FechaCreacion,
+                             TotalPreguntas = 0
+                         }).FirstOrDefaultAsync();
+
+        return quiz;
     }
 
     public async Task<Quiz?> GetByIdAsync(int id)
     {
-        return await _context.Quizzes
-            .Include(q => q.Detalles)
-            .Include(q => q.Asignatura)
-            .Include(q => q.Usuario)
-            .FirstOrDefaultAsync(q => q.IdQuiz == id);
+        return await _context.Quizzes.FirstOrDefaultAsync(q => q.IdQuiz == id);
     }
 
-    public async Task AddAsync(Quiz quiz)
+    public async Task<List<QuizListDto>> GetByUsuarioWithInfoAsync(int idUsuario)
     {
+        var quizzes = await (from q in _context.Quizzes
+                           join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
+                           where q.IdUsuario == idUsuario
+                           select new QuizListDto
+                           {
+                               IdQuiz = q.IdQuiz,
+                               Nombre = q.Nombre,
+                               Descripcion = q.Descripcion,
+                               NombreCreador = u.Nombre,
+                               FechaCreacion = q.FechaCreacion,
+                               TotalPreguntas = 0
+                           }).OrderByDescending(q => q.FechaCreacion)
+                           .ToListAsync();
+
+        return quizzes;
+    }
+
+    public async Task<List<Quiz>> GetByUsuarioAsync(int idUsuario)
+    {
+        return await _context.Quizzes
+            .Where(q => q.IdUsuario == idUsuario)
+            .OrderByDescending(q => q.FechaCreacion)
+            .ToListAsync();
+    }
+
+    public async Task<List<QuizListDto>> GetQuizzesPopularesAsync(int limite = 10)
+    {
+        var quizzes = await (from q in _context.Quizzes
+                           join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
+                           select new QuizListDto
+                           {
+                               IdQuiz = q.IdQuiz,
+                               Nombre = q.Nombre,
+                               Descripcion = q.Descripcion,
+                               NombreCreador = u.Nombre,
+                               FechaCreacion = q.FechaCreacion,
+                               TotalPreguntas = 0
+                           }).OrderByDescending(q => q.FechaCreacion)
+                           .Take(limite)
+                           .ToListAsync();
+
+        return quizzes;
+    }
+
+    public async Task<int> AddAsync(Quiz quiz)
+    {
+        if (!await ValidarLimiteQuizzesUsuarioAsync(quiz.IdUsuario))
+        {
+            throw new InvalidOperationException($"El usuario ha alcanzado el límite máximo de {MAX_QUIZZES_POR_USUARIO} quizzes.");
+        }
+
         _context.Quizzes.Add(quiz);
         await _context.SaveChangesAsync();
+        return quiz.IdQuiz;
     }
 
     public async Task UpdateAsync(Quiz quiz)
@@ -49,31 +136,34 @@ public class QuizService : IQuizService
             await _context.SaveChangesAsync();
         }
     }
-    public async Task<List<Quiz>> GetByCursoAsync(int idCurso)
+
+    public async Task<bool> ValidarLimiteQuizzesUsuarioAsync(int idUsuario)
     {
-        return await _context.Quizzes
-            .Where(q => q.IdCurso == idCurso)
-            .Include(q => q.Asignatura)
-            .Include(q => q.Usuario)
-            .ToListAsync();
+        var count = await _context.Quizzes.CountAsync(q => q.IdUsuario == idUsuario);
+        return count < MAX_QUIZZES_POR_USUARIO;
     }
 
-    public async Task<List<Quiz>> GetByAsignaturaAsync(int idAsignatura)
+    public async Task<bool> UsuarioEsPropietarioAsync(int idQuiz, int idUsuario)
     {
-        return await _context.Quizzes
-            .Where(q => q.IdAsignatura == idAsignatura)
-            .Include(q => q.Usuario)
-            .Include(q => q.Curso)
-            .ToListAsync();
+        return await _context.Quizzes.AnyAsync(q => q.IdQuiz == idQuiz && q.IdUsuario == idUsuario);
     }
 
-    public async Task<List<Quiz>> GetByCursoYAsignaturaAsync(int idCurso, int idAsignatura)
+    public async Task<QuizStatsDto?> GetEstadisticasAsync(int idQuiz)
     {
-        return await _context.Quizzes
-            .Where(q => q.IdCurso == idCurso && q.IdAsignatura == idAsignatura)
-            .Include(q => q.Usuario)
-            .Include(q => q.Curso)
-            .ToListAsync();
-    }
+        var stats = await (from q in _context.Quizzes
+                          join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
+                          where q.IdQuiz == idQuiz
+                          select new QuizStatsDto
+                          {
+                              IdQuiz = q.IdQuiz,
+                              Nombre = q.Nombre,
+                              NombreCreador = u.Nombre,
+                              FechaCreacion = q.FechaCreacion,
+                              TotalPreguntas = 0, // Después lo calcularemos con las preguntas reales
+                              TotalRespuestas = 0,
+                              VecesRespondido = 0
+                          }).FirstOrDefaultAsync();
 
+        return stats;
+    }
 }

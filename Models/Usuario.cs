@@ -1,3 +1,4 @@
+// Models/Usuario.cs (sin navegación a Quizzes)
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -18,7 +19,7 @@ public class Usuario
     public string Gmail { get; set; }
 
     public string? Telefono { get; set; }
-
+    
     [Required]
     public string Contraseña { get; set; }
 
@@ -30,7 +31,6 @@ public class Usuario
 
     [JsonIgnore]
     public string? Token { get; set; }
-
 
 
     [JsonIgnore]
@@ -54,9 +54,7 @@ public class Usuario
     [JsonIgnore]
     public ICollection<Favorito> Favoritos { get; set; }
 
-    [JsonIgnore]
-    public ICollection<Quiz> Quizzes { get; set; }
-
+    // SIN QUIZZES - se eliminó la línea
     [JsonIgnore]
     public ICollection<ResultadoQuiz> Resultados { get; set; }
 
@@ -69,7 +67,7 @@ public class Usuario
         Videos = new List<Video>();
         Comentarios = new List<ComentarioVideo>();
         Favoritos = new List<Favorito>();
-        Quizzes = new List<Quiz>();
+        // Quizzes = new List<Quiz>(); // ELIMINADO
         Resultados = new List<ResultadoQuiz>();
     }
 }

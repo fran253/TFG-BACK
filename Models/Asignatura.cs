@@ -25,5 +25,4 @@ public class Asignatura
 
     public ICollection<UsuarioAsignatura> UsuarioAsignaturas { get; set; }
     public ICollection<Video> Videos { get; set; }
-    public ICollection<Quiz> Quizzes { get; set; }
 }

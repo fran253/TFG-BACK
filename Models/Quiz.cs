@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 public class Quiz
 {
@@ -12,18 +11,11 @@ public class Quiz
 
     public string? Descripcion { get; set; }
 
-    [ForeignKey("Asignatura")]
-    public int IdAsignatura { get; set; }
-    public Asignatura Asignatura { get; set; }
-
-    [ForeignKey("Usuario")]
+    [Required]
     public int IdUsuario { get; set; }
-    public Usuario Usuario { get; set; }
 
-    [ForeignKey("Curso")]
-    public int? IdCurso { get; set; }
-    public Curso? Curso { get; set; }
+    public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
-    public ICollection<DetalleQuiz> Detalles { get; set; }
-    public ICollection<ResultadoQuiz> Resultados { get; set; }
+    // NO PROPIEDADES DE NAVEGACIÓN POR AHORA
+    // Entity Framework las está interpretando mal
 }

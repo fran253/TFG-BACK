@@ -61,25 +61,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ---------------------------- Comentamos la Configuración de autenticación JWT ----------------------------
-// Comenta o elimina todo este bloque
-/*
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
-*/
-
 // Opcionalmente, podemos agregar una autenticación básica si la necesitas
-// Sin usar paquetes externos
 builder.Services.AddAuthentication();
 
 // ---------------------------- Servicios (AddScoped) ----------------------------
@@ -101,14 +83,19 @@ builder.Services.AddScoped<IComentarioVideoService, ComentarioVideoService>();
 builder.Services.AddScoped<IFavoritoService, FavoritoService>();
 builder.Services.AddScoped<IReporteVideoService, ReporteVideoService>();
 
+// QUIZZES - NUEVO DISEÑO
+
 // PETICIONES
 builder.Services.AddScoped<IPeticionProfesorService, PeticionProfesorService>();
 
 
 // QUIZZES
 builder.Services.AddScoped<IQuizService, QuizService>();
-builder.Services.AddScoped<IDetalleQuizService, DetalleQuizService>();
+builder.Services.AddScoped<IPreguntaService, PreguntaService>();
+builder.Services.AddScoped<IRespuestaService, RespuestaService>();
+builder.Services.AddScoped<IQuizManagementService, QuizManagementService>();
 builder.Services.AddScoped<IResultadoQuizService, ResultadoQuizService>();
+builder.Services.AddScoped<IValoracionQuizService, ValoracionQuizService>();
 
 // RELACIONES
 builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
