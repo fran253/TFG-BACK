@@ -98,5 +98,12 @@ public class VideoService : IVideoService
             .Include(v => v.Curso)
             .ToListAsync();
     }
+    
+    public async Task<int> GetContadorLikesAsync(int idVideo)
+    {
+        var video = await _context.Videos.FindAsync(idVideo);
+        return video?.ContadorLikes ?? 0;
+    }
+
 
 }

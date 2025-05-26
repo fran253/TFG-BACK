@@ -5,11 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 public class UsuarioController : ControllerBase
 {
     private readonly IUsuarioService _service;
+    private readonly IFavoritoService _favoritoService;
 
-    public UsuarioController(IUsuarioService service)
+    public UsuarioController(IUsuarioService service, IFavoritoService favoritoService)
     {
         _service = service;
+        _favoritoService = favoritoService;
     }
+
+
 
     [HttpGet]
     public async Task<ActionResult<List<Usuario>>> GetAll()
@@ -80,5 +84,13 @@ public class UsuarioController : ControllerBase
         return Ok(resultado);
     }
 
+    [HttpGet("usuario-likea/{idVideo}")]
+    public async Task<ActionResult<bool>> UsuarioHaLikeado(int idVideo, [FromHeader] string token)
+    {
+        var usuario = await _service.GetByTokenAsync(token);
+        if (usuario == null) return Unauthorized();
 
+        var likeado = await _favoritoService.ExisteFavorito(usuario.IdUsuario, idVideo);
+        return Ok(likeado);
+    }
 }

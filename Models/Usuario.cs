@@ -29,7 +29,6 @@ public class Usuario
     [JsonIgnore]
     public Rol? Rol { get; set; }
 
-    [JsonIgnore]
     public string? Token { get; set; }
 
 
@@ -52,7 +51,8 @@ public class Usuario
     public ICollection<ComentarioVideo> Comentarios { get; set; }
 
     [JsonIgnore]
-    public ICollection<Favorito> Favoritos { get; set; }
+    public ICollection<Favorito> Favoritos { get; set; } = new List<Favorito>();
+
 
     // SIN QUIZZES - se eliminó la línea
     [JsonIgnore]

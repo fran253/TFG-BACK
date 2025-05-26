@@ -73,16 +73,20 @@ public class AcademIQDbContext : DbContext
 
         // Relaciones Favorito
         modelBuilder.Entity<Favorito>()
+            .HasKey(f => new { f.IdUsuario, f.IdVideo });
+
+        modelBuilder.Entity<Favorito>()
             .HasOne(f => f.Usuario)
-            .WithMany()
+            .WithMany(u => u.Favoritos)
             .HasForeignKey(f => f.IdUsuario)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Favorito>()
             .HasOne(f => f.Video)
-            .WithMany()
+            .WithMany(v => v.Favoritos)
             .HasForeignKey(f => f.IdVideo)
             .OnDelete(DeleteBehavior.Cascade);
+
 
         // Relaciones PeticionProfesor
         modelBuilder.Entity<PeticionProfesor>()
