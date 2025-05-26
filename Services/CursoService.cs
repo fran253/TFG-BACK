@@ -20,6 +20,14 @@ public class CursoService : ICursoService
     {
         return await _context.Cursos.FindAsync(id);
     }
+    public async Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario)
+    {
+        return await _context.UsuarioCursos
+            .Where(uc => uc.IdUsuario == idUsuario)
+            .Select(uc => uc.Curso)
+            .Include(c => c.Asignaturas)
+            .ToListAsync();
+    }
 
     public async Task AddAsync(Curso curso)
     {
@@ -35,26 +43,25 @@ public class CursoService : ICursoService
 
     public async Task DeleteAsync(int id)
     {
-        var curso = await _context.Cursos.FindAsync(id);
+        var curso = await _context.Cursos
+            .Include(c => c.Videos) // Asegúrate de que la navegación existe
+            .FirstOrDefaultAsync(c => c.IdCurso == id);
+
         if (curso != null)
         {
+            // Eliminar vídeos asociados primero
+            _context.Videos.RemoveRange(curso.Videos);
+
+            // Ahora eliminar el curso
             _context.Cursos.Remove(curso);
+
             await _context.SaveChangesAsync();
         }
     }
 
+
  
     public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario, string? urlImagen = null)
-    {
-        return await _context.UsuarioCursos
-            .Where(uc => uc.IdUsuario == idUsuario)
-            .Select(uc => uc.Curso)
-            .Include(c => c.Asignaturas) 
-            .ToListAsync();
-    }
-}
-
-    public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario)
     {
         var nombreExiste = await _context.Cursos
             .AnyAsync(c => c.Nombre.ToLower() == dto.Nombre.ToLower());
@@ -65,7 +72,7 @@ public class CursoService : ICursoService
         var nuevoCurso = new Curso
         {
             Nombre = dto.Nombre,
-            Imagen = urlImagen, 
+            Imagen = urlImagen,
             Descripcion = dto.Descripcion,
             FechaCreacion = DateTime.UtcNow,
             IdUsuario = idUsuario
@@ -76,6 +83,8 @@ public class CursoService : ICursoService
 
         return nuevoCurso;
     }
+
+
     public async Task<List<CursoVideosDTO>> GetTopCursosConMasVideosAsync(int cantidad)
     {
         return await _context.Videos

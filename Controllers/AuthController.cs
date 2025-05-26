@@ -55,6 +55,7 @@ public class AuthController : ControllerBase
             Nombre = usuarioCreado.Nombre,
             Token = token,
             Rol = usuarioCreado.Rol?.Nombre ?? "Usuario",
+            IdRol = usuarioCreado.IdRol
         });
 
     }
