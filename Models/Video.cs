@@ -27,13 +27,11 @@ public class Video
     [ForeignKey("Asignatura")]
     public int IdAsignatura { get; set; }
 
-    [JsonIgnore]
     public Asignatura Asignatura { get; set; }
 
     [ForeignKey("Usuario")]
     public int IdUsuario { get; set; }
 
-    [JsonIgnore]
     public Usuario Usuario { get; set; }
 
     [ForeignKey("Curso")]

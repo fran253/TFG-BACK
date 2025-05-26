@@ -15,7 +15,6 @@ public class FavoritoController : ControllerBase
         _usuarioService = usuarioService;
     }
 
-
     [HttpGet("usuario/{idUsuario}")]
     public async Task<ActionResult<List<Video>>> GetFavoritos(int idUsuario)
     {
@@ -36,7 +35,6 @@ public class FavoritoController : ControllerBase
         return Ok();
     }
 
-
     [HttpDelete("{idUsuario}/{idVideo}")]
     public async Task<ActionResult> Delete(int idUsuario, int idVideo)
     {
@@ -45,24 +43,65 @@ public class FavoritoController : ControllerBase
     }
     
     [HttpPost("toggle/{idVideo}")]
-    public async Task<ActionResult> ToggleFavorito(int idVideo, [FromHeader] string token)
+    public async Task<ActionResult> ToggleFavorito(int idVideo)
     {
-        var usuario = await _usuarioService.GetByTokenAsync(token);
-        if (usuario == null) return Unauthorized();
+        try
+        {
+            // CORREGIDO: Extraer token del header Authorization
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (authHeader == null || !authHeader.StartsWith("Bearer "))
+            {
+                return Unauthorized(new { message = "Token de autorización requerido" });
+            }
 
-        var liked = await _service.ToggleFavoritoAsync(usuario.IdUsuario, idVideo);
-        return Ok(new { liked });
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            
+            var usuario = await _usuarioService.GetByTokenAsync(token);
+            if (usuario == null) 
+            {
+                return Unauthorized(new { message = "Token inválido o expirado" });
+            }
+
+            Console.WriteLine($"Toggle favorito - Usuario: {usuario.IdUsuario}, Video: {idVideo}");
+
+            var liked = await _service.ToggleFavoritoAsync(usuario.IdUsuario, idVideo);
+            
+            return Ok(new { liked = liked });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en ToggleFavorito: {ex.Message}");
+            return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
+        }
     }
 
     [HttpGet("usuario-likea/{idVideo}")]
-    public async Task<ActionResult<bool>> UsuarioHaLikeado(int idVideo, [FromHeader] string token)
+    public async Task<ActionResult<bool>> UsuarioHaLikeado(int idVideo)
     {
-        var usuario = await _usuarioService.GetByTokenAsync(token);
-        if (usuario == null) return Unauthorized();
+        try
+        {
+            // CORREGIDO: Extraer token del header Authorization
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (authHeader == null || !authHeader.StartsWith("Bearer "))
+            {
+                return Unauthorized(new { message = "Token de autorización requerido" });
+            }
 
-        var likeado = await _service.ExisteFavorito(usuario.IdUsuario, idVideo);
-        return Ok(likeado);
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            
+            var usuario = await _usuarioService.GetByTokenAsync(token);
+            if (usuario == null) 
+            {
+                return Unauthorized(new { message = "Token inválido o expirado" });
+            }
+
+            var likeado = await _service.ExisteFavorito(usuario.IdUsuario, idVideo);
+            return Ok(likeado);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en UsuarioHaLikeado: {ex.Message}");
+            return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
+        }
     }
-
-
 }
