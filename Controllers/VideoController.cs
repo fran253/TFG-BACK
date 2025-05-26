@@ -144,4 +144,12 @@ public class VideoController : ControllerBase
         var lista = await _videoService.GetVideosReportadosAsync();
         return Ok(lista);
     }
+    
+    [HttpGet("likes/{idVideo}")]
+    public async Task<ActionResult<int>> GetLikes(int idVideo)
+    {
+        var total = await _videoService.GetContadorLikesAsync(idVideo);
+        return Ok(total);
+    }
+
 }

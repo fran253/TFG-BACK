@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 public class FavoritoController : ControllerBase
 {
     private readonly IFavoritoService _service;
+    private readonly IUsuarioService _usuarioService;
 
-    public FavoritoController(IFavoritoService service)
+    public FavoritoController(IFavoritoService service, IUsuarioService usuarioService)
     {
         _service = service;
+        _usuarioService = usuarioService;
     }
+
 
     [HttpGet("usuario/{idUsuario}")]
     public async Task<ActionResult<List<Video>>> GetFavoritos(int idUsuario)
@@ -40,4 +43,26 @@ public class FavoritoController : ControllerBase
         await _service.DeleteAsync(idUsuario, idVideo);
         return NoContent();
     }
+    
+    [HttpPost("toggle/{idVideo}")]
+    public async Task<ActionResult> ToggleFavorito(int idVideo, [FromHeader] string token)
+    {
+        var usuario = await _usuarioService.GetByTokenAsync(token);
+        if (usuario == null) return Unauthorized();
+
+        var liked = await _service.ToggleFavoritoAsync(usuario.IdUsuario, idVideo);
+        return Ok(new { liked });
+    }
+
+    [HttpGet("usuario-likea/{idVideo}")]
+    public async Task<ActionResult<bool>> UsuarioHaLikeado(int idVideo, [FromHeader] string token)
+    {
+        var usuario = await _usuarioService.GetByTokenAsync(token);
+        if (usuario == null) return Unauthorized();
+
+        var likeado = await _service.ExisteFavorito(usuario.IdUsuario, idVideo);
+        return Ok(likeado);
+    }
+
+
 }

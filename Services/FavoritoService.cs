@@ -43,4 +43,34 @@ public class FavoritoService : IFavoritoService
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> ExisteFavorito(int idUsuario, int idVideo)
+    {
+        return await _context.Favoritos.AnyAsync(f => f.IdUsuario == idUsuario && f.IdVideo == idVideo);
+    }
+
+
+    public async Task<bool> ToggleFavoritoAsync(int idUsuario, int idVideo)
+    {
+        var favorito = await _context.Favoritos.FindAsync(idUsuario, idVideo);
+        var video = await _context.Videos.FindAsync(idVideo);
+        if (video == null) return false;
+
+        if (favorito != null)
+        {
+            _context.Favoritos.Remove(favorito);
+            video.ContadorLikes--;
+            await _context.SaveChangesAsync();
+            return false; 
+        }
+        else
+        {
+            _context.Favoritos.Add(new Favorito { IdUsuario = idUsuario, IdVideo = idVideo });
+            video.ContadorLikes++;
+            await _context.SaveChangesAsync();
+            return true; 
+        }
+    }
+
+
 }

@@ -10,4 +10,6 @@ public interface IVideoService
     Task<int> AddAsync(Video video); 
     Task UpdateAsync(Video video);
     Task DeleteAsync(int id);
+    Task<int> GetContadorLikesAsync(int idVideo);
+
 }

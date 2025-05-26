@@ -22,6 +22,7 @@ public class Video
     public DateTime FechaSubida { get; set; } = DateTime.Now;
 
     public int NumReportes { get; set; } = 0;
+    public int ContadorLikes { get; set; } = 0;
 
     [ForeignKey("Asignatura")]
     public int IdAsignatura { get; set; }
@@ -46,8 +47,9 @@ public class Video
 
     [JsonIgnore]
     public ICollection<ComentarioVideo> Comentarios { get; set; }
-
+    
     [JsonIgnore]
     public ICollection<Favorito> Favoritos { get; set; }
+
 }
 
