@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
             IdUsuario = usuarioCreado.IdUsuario,
             Nombre = usuarioCreado.Nombre,
             Token = token,
-            Rol = usuarioCreado.Rol?.Nombre ?? "Usuario"
+            Rol = usuarioCreado.Rol?.Nombre ?? "Usuario",
         });
 
     }
@@ -90,7 +90,8 @@ public class AuthController : ControllerBase
             IdUsuario = usuario.IdUsuario,
             Nombre = usuario.Nombre,
             Token = token,
-            Rol = usuario.Rol?.Nombre ?? "Usuario"
+            Rol = usuario.Rol?.Nombre ?? "Usuario",
+            IdRol = usuario.IdRol
         });
     }
     

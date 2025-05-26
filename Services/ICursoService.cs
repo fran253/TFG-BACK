@@ -5,10 +5,8 @@ public interface ICursoService
     Task AddAsync(Curso curso);
     Task UpdateAsync(Curso curso);
     Task DeleteAsync(int id);
+    Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario, string? urlImagen = null);
+    Task<List<CursoVideosDTO>> GetTopCursosConMasVideosAsync(int cantidad);
     Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario); 
 }
 
-    Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario);
-    Task<List<CursoVideosDTO>> GetTopCursosConMasVideosAsync(int cantidad);
-}
- 

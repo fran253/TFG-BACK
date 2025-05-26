@@ -43,7 +43,8 @@ public class CursoService : ICursoService
         }
     }
 
-    public async Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario)
+ 
+    public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario, string? urlImagen = null)
     {
         return await _context.UsuarioCursos
             .Where(uc => uc.IdUsuario == idUsuario)
@@ -64,7 +65,7 @@ public class CursoService : ICursoService
         var nuevoCurso = new Curso
         {
             Nombre = dto.Nombre,
-            Imagen = dto.Imagen,
+            Imagen = urlImagen, 
             Descripcion = dto.Descripcion,
             FechaCreacion = DateTime.UtcNow,
             IdUsuario = idUsuario
