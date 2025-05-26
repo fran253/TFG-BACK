@@ -26,4 +26,6 @@ public class Curso
 
     public ICollection<Asignatura> Asignaturas { get; set; }
     public ICollection<UsuarioCurso> UsuarioCursos { get; set; }
+    public ICollection<Video> Videos { get; set; }
+
 }

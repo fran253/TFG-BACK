@@ -89,4 +89,20 @@ public class UsuarioService : IUsuarioService
             .ToListAsync();
     }
 
+    //grafico de orofes con mas videos
+    public async Task<List<UsuarioVideosDTO>> GetUsuariosConMasVideosAsync(int top)
+    {
+        return await _context.Videos
+            .GroupBy(v => new { v.Usuario.IdUsuario, v.Usuario.Nombre })
+            .Select(g => new UsuarioVideosDTO
+            {
+                NombreUsuario = g.Key.Nombre,
+                TotalVideos = g.Count()
+            })
+            .OrderByDescending(u => u.TotalVideos)
+            .Take(top)
+            .ToListAsync();
+    }
+
+
 }

@@ -73,7 +73,7 @@ public class CursoController : ControllerBase
             return StatusCode(500, $"Error interno del servidor: {ex.Message}");
         }
     }
-}
+
 
     [HttpPost("crear")]
     public async Task<ActionResult> CrearCurso([FromForm] CursoCrearDTO dto)

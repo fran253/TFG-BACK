@@ -5,7 +5,7 @@ public class AcademIQDbContext : DbContext
 {
     public AcademIQDbContext(DbContextOptions<AcademIQDbContext> options) : base(options) { }
 
-    // Entidades existentes QUE FUNCIONAN
+    // --------------------- DbSets ---------------------
     public DbSet<Rol> Roles { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Curso> Cursos { get; set; }
@@ -19,23 +19,20 @@ public class AcademIQDbContext : DbContext
     public DbSet<Seguimiento> Seguimientos { get; set; }
     public DbSet<ReporteVideo> ReportesVideo { get; set; }
 
-    // QUIZ SYSTEM - TODOS LOS DbSets NECESARIOS
+    // Quiz
     public DbSet<Quiz> Quizzes { get; set; }
     public DbSet<Pregunta> Preguntas { get; set; }
     public DbSet<Respuesta> Respuestas { get; set; }
     public DbSet<ResultadoQuiz> ResultadosQuiz { get; set; }
     public DbSet<ValoracionQuiz> ValoracionesQuiz { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        // SOLO las configuraciones que YA FUNCIONAN
-
+    // Extra
     public DbSet<PeticionProfesor> PeticionProfesor { get; set; }
 
+    // --------------------- Fluent API ---------------------
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // ---------------- Claves compuestas ----------------
-
+        // Claves compuestas
         modelBuilder.Entity<UsuarioCurso>()
             .HasKey(uc => new { uc.IdUsuario, uc.IdCurso });
 
@@ -48,8 +45,7 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<Seguimiento>()
             .HasKey(s => new { s.IdAlumno, s.IdProfesor });
 
-        // Configurar las relaciones entre Seguimiento y Usuario (ESTAS FUNCIONAN)
-        // ---------------- Relaciones de UsuarioCurso ----------------
+        // Relaciones UsuarioCurso
         modelBuilder.Entity<UsuarioCurso>()
             .HasOne(uc => uc.Usuario)
             .WithMany(u => u.UsuarioCursos)
@@ -62,7 +58,7 @@ public class AcademIQDbContext : DbContext
             .HasForeignKey(uc => uc.IdCurso)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // ---------------- Relaciones de UsuarioAsignatura ----------------
+        // Relaciones UsuarioAsignatura
         modelBuilder.Entity<UsuarioAsignatura>()
             .HasOne(ua => ua.Usuario)
             .WithMany(u => u.UsuarioAsignaturas)
@@ -75,7 +71,7 @@ public class AcademIQDbContext : DbContext
             .HasForeignKey(ua => ua.IdAsignatura)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // ---------------- Relaciones de Favorito ----------------
+        // Relaciones Favorito
         modelBuilder.Entity<Favorito>()
             .HasOne(f => f.Usuario)
             .WithMany()
@@ -88,14 +84,14 @@ public class AcademIQDbContext : DbContext
             .HasForeignKey(f => f.IdVideo)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // ---------------- Relaciones de PeticionProfesor ----------------
+        // Relaciones PeticionProfesor
         modelBuilder.Entity<PeticionProfesor>()
             .HasOne(p => p.Usuario)
             .WithMany()
             .HasForeignKey(p => p.IdUsuario)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // ---------------- Relaciones de Seguimiento ----------------
+        // Relaciones Seguimiento
         modelBuilder.Entity<Seguimiento>()
             .HasOne(s => s.Alumno)
             .WithMany(u => u.Seguidores)
@@ -108,11 +104,7 @@ public class AcademIQDbContext : DbContext
             .HasForeignKey(s => s.IdProfesor)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // NO CONFIGURAR RELACIONES DE QUIZ POR AHORA
-        // Dejamos que Entity Framework use las convenciones por defecto
-
-        // Configurar nombres de tablas
-        // ---------------- Nombres de tablas ----------------
+        // Nombres de tablas
         modelBuilder.Entity<Asignatura>().ToTable("Asignatura");
         modelBuilder.Entity<ComentarioVideo>().ToTable("ComentarioVideo");
         modelBuilder.Entity<Curso>().ToTable("Curso");
@@ -124,8 +116,8 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<UsuarioAsignatura>().ToTable("Usuario_Asignatura");
         modelBuilder.Entity<UsuarioCurso>().ToTable("Usuario_Curso");
         modelBuilder.Entity<Video>().ToTable("Video");
-        
-        // Nombres de tablas para Quiz system
+
+        // Quiz system
         modelBuilder.Entity<Quiz>().ToTable("Quiz");
         modelBuilder.Entity<Pregunta>().ToTable("Pregunta");
         modelBuilder.Entity<Respuesta>().ToTable("Respuesta");

@@ -8,6 +8,8 @@ public interface IUsuarioService
     Task DeleteAsync(int id);
     Task<Usuario?> GetByTokenAsync(string token);    //TOKEN
     Task<List<RolEstadisticaDTO>> ObtenerEstadisticasPorRol(); //funcion para el grafico
+    Task<List<UsuarioVideosDTO>> GetUsuariosConMasVideosAsync(int top); // mas graficos
+
 
 
 }

@@ -32,21 +32,21 @@ if (awsOptions.Exists())
 // ---------------------------- Configuración de archivos grandes ----------------------------
 builder.Services.Configure<IISServerOptions>(options =>
 {
-    options.MaxRequestBodySize = 500 * 1024 * 1024;
+    options.MaxRequestBodySize = null; // Sin límite para IIS
 });
 
 builder.Services.Configure<KestrelServerOptions>(options =>
 {
-    options.Limits.MaxRequestBodySize = 500 * 1024 * 1024;
-    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
-    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+    options.Limits.MaxRequestBodySize = 5L * 1024 * 1024 * 1024; // 5GB
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(60);   // 1 hora
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(15); // 15 minutos
 });
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 500 * 1024 * 1024;
-    options.ValueLengthLimit = 500 * 1024 * 1024;
-    options.MultipartHeadersLengthLimit = 8192;
+    options.MultipartBodyLengthLimit = 5L * 1024 * 1024 * 1024;  // 5GB
+    options.ValueLengthLimit = int.MaxValue;                      // ~2GB (máximo int)
+    options.MultipartHeadersLengthLimit = 16384;                 // 16KB
 });
 
 // ---------------------------- CORS ----------------------------
@@ -83,11 +83,8 @@ builder.Services.AddScoped<IComentarioVideoService, ComentarioVideoService>();
 builder.Services.AddScoped<IFavoritoService, FavoritoService>();
 builder.Services.AddScoped<IReporteVideoService, ReporteVideoService>();
 
-// QUIZZES - NUEVO DISEÑO
-
 // PETICIONES
 builder.Services.AddScoped<IPeticionProfesorService, PeticionProfesorService>();
-
 
 // QUIZZES
 builder.Services.AddScoped<IQuizService, QuizService>();

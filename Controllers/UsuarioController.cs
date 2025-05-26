@@ -73,4 +73,12 @@ public class UsuarioController : ControllerBase
         return Ok(resultado);
     }
 
+    [HttpGet("top-usuarios-videos")]
+    public async Task<ActionResult<List<UsuarioVideosDTO>>> GetUsuariosConMasVideos()
+    {
+        var resultado = await _service.GetUsuariosConMasVideosAsync(10);
+        return Ok(resultado);
+    }
+
+
 }
