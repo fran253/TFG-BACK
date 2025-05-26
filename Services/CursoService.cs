@@ -43,6 +43,16 @@ public class CursoService : ICursoService
         }
     }
 
+    public async Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario)
+    {
+        return await _context.UsuarioCursos
+            .Where(uc => uc.IdUsuario == idUsuario)
+            .Select(uc => uc.Curso)
+            .Include(c => c.Asignaturas) 
+            .ToListAsync();
+    }
+}
+
     public async Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario)
     {
         var nombreExiste = await _context.Cursos

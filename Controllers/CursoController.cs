@@ -52,6 +52,24 @@ public class CursoController : ControllerBase
         return NoContent();
     }
 
+    // NUEVO: Endpoint para obtener cursos por usuario
+    [HttpGet("usuario/{idUsuario}")]
+    public async Task<ActionResult<List<Curso>>> GetCursosByUsuario(int idUsuario)
+    {
+        try
+        {
+            // Nota: Actualmente el modelo Curso no tiene IdUsuarioCreador
+            // Por ahora devolvemos los cursos donde el usuario está inscrito
+            var cursos = await _service.GetCursosPorUsuarioAsync(idUsuario);
+            return Ok(cursos);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
+    }
+}
+
     [HttpPost("crear")]
     public async Task<ActionResult> CrearCurso([FromBody] CursoCrearDTO dto)
     {
