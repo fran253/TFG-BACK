@@ -45,4 +45,27 @@ public class ComentarioVideoService : IComentarioVideoService
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> ReportarComentarioAsync(int idComentario)
+    {
+        var comentario = await _context.ComentariosVideo.FindAsync(idComentario);
+        if (comentario == null)
+            return false;
+
+        comentario.NumeroReportes += 1;
+        _context.ComentariosVideo.Update(comentario);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<List<ComentarioVideo>> GetReportadosAsync()
+    {
+        return await _context.ComentariosVideo
+            .Include(c => c.Usuario)
+            .Include(c => c.Video)
+            .Where(c => c.NumeroReportes > 0)
+            .OrderByDescending(c => c.NumeroReportes)
+            .ToListAsync();
+    }
+
 }

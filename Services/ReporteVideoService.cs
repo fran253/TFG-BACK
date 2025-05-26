@@ -10,11 +10,45 @@ public class ReporteVideoService : IReporteVideoService
         _context = context;
     }
 
+    public async Task<List<ReporteVideoDTO>> GetAllDTOAsync()
+    {
+        var reportes = await _context.ReportesVideo
+            .Include(r => r.Usuario)
+            .ToListAsync();
+
+        return reportes.Select(r => new ReporteVideoDTO
+        {
+            IdReporte = r.IdReporte,
+            IdUsuario = r.IdUsuario,
+            IdVideo = r.IdVideo,
+            Motivo = r.Motivo,
+            Fecha = r.Fecha,
+            NombreUsuario = r.Usuario.Nombre
+        }).ToList();
+
+    }
+
+    public async Task<List<ReporteVideoDTO>> GetDTOsByVideoIdAsync(int idVideo)
+    {
+        var reportes = await _context.ReportesVideo
+            .Where(r => r.IdVideo == idVideo)
+            .Include(r => r.Usuario)
+            .ToListAsync();
+
+        return reportes.Select(r => new ReporteVideoDTO
+        {
+            IdReporte = r.IdReporte,
+            Fecha = r.Fecha,
+            Motivo = r.Motivo,
+            IdUsuario = r.IdUsuario,
+            NombreUsuario = r.Usuario.Nombre
+        }).ToList();
+    }
     public async Task<List<ReporteVideo>> GetAllAsync()
     {
         return await _context.ReportesVideo
-            .Include(r => r.Video)
             .Include(r => r.Usuario)
+            .Include(r => r.Video)
             .ToListAsync();
     }
 
@@ -56,5 +90,21 @@ public class ReporteVideoService : IReporteVideoService
         }
 
         await _context.SaveChangesAsync();
+    }
+    
+    public async Task ResetearReportesAsync(int idVideo)
+    {
+        var video = await _context.Videos.FindAsync(idVideo);
+        
+        if (video != null)
+        {
+            video.NumReportes = 0;
+            
+            await _context.SaveChangesAsync();
+        }
+        else
+        {
+            throw new KeyNotFoundException($"No se encontró el video con ID {idVideo}");
+        }
     }
 }

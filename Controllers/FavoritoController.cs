@@ -21,11 +21,18 @@ public class FavoritoController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Add([FromBody] Favorito favorito)
+    public async Task<ActionResult> Add([FromBody] FavoritoDTO dto)
     {
+        var favorito = new Favorito
+        {
+            IdUsuario = dto.IdUsuario,
+            IdVideo = dto.IdVideo
+        };
+
         await _service.AddAsync(favorito);
         return Ok();
     }
+
 
     [HttpDelete("{idUsuario}/{idVideo}")]
     public async Task<ActionResult> Delete(int idUsuario, int idVideo)

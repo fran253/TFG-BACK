@@ -1,9 +1,8 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace TuProyecto.Models
 {
+    [Table("ReporteVideo")] // Asegúrate de que el nombre coincida con la tabla real
     public class ReporteVideo
     {
         [Key]
@@ -21,8 +20,10 @@ namespace TuProyecto.Models
 
         public DateTime Fecha { get; set; } = DateTime.Now;
 
-        // Relaciones
+        [ForeignKey("IdUsuario")]
         public Usuario? Usuario { get; set; }
+
+        [ForeignKey("IdVideo")]
         public Video? Video { get; set; }
     }
 }

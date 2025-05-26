@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 public interface ICursoService
 {
     Task<List<Curso>> GetAllAsync();
@@ -10,3 +7,8 @@ public interface ICursoService
     Task DeleteAsync(int id);
     Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario); 
 }
+
+    Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario);
+    Task<List<CursoVideosDTO>> GetTopCursosConMasVideosAsync(int cantidad);
+}
+ 

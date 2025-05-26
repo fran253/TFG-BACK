@@ -29,6 +29,13 @@ public class AcademIQDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // SOLO las configuraciones que YA FUNCIONAN
+
+    public DbSet<PeticionProfesor> PeticionProfesor { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // ---------------- Claves compuestas ----------------
+
         modelBuilder.Entity<UsuarioCurso>()
             .HasKey(uc => new { uc.IdUsuario, uc.IdCurso });
 
@@ -42,6 +49,53 @@ public class AcademIQDbContext : DbContext
             .HasKey(s => new { s.IdAlumno, s.IdProfesor });
 
         // Configurar las relaciones entre Seguimiento y Usuario (ESTAS FUNCIONAN)
+        // ---------------- Relaciones de UsuarioCurso ----------------
+        modelBuilder.Entity<UsuarioCurso>()
+            .HasOne(uc => uc.Usuario)
+            .WithMany(u => u.UsuarioCursos)
+            .HasForeignKey(uc => uc.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UsuarioCurso>()
+            .HasOne(uc => uc.Curso)
+            .WithMany(c => c.UsuarioCursos)
+            .HasForeignKey(uc => uc.IdCurso)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ---------------- Relaciones de UsuarioAsignatura ----------------
+        modelBuilder.Entity<UsuarioAsignatura>()
+            .HasOne(ua => ua.Usuario)
+            .WithMany(u => u.UsuarioAsignaturas)
+            .HasForeignKey(ua => ua.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UsuarioAsignatura>()
+            .HasOne(ua => ua.Asignatura)
+            .WithMany(a => a.UsuarioAsignaturas)
+            .HasForeignKey(ua => ua.IdAsignatura)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ---------------- Relaciones de Favorito ----------------
+        modelBuilder.Entity<Favorito>()
+            .HasOne(f => f.Usuario)
+            .WithMany()
+            .HasForeignKey(f => f.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Favorito>()
+            .HasOne(f => f.Video)
+            .WithMany()
+            .HasForeignKey(f => f.IdVideo)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ---------------- Relaciones de PeticionProfesor ----------------
+        modelBuilder.Entity<PeticionProfesor>()
+            .HasOne(p => p.Usuario)
+            .WithMany()
+            .HasForeignKey(p => p.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ---------------- Relaciones de Seguimiento ----------------
         modelBuilder.Entity<Seguimiento>()
             .HasOne(s => s.Alumno)
             .WithMany(u => u.Seguidores)
@@ -58,6 +112,7 @@ public class AcademIQDbContext : DbContext
         // Dejamos que Entity Framework use las convenciones por defecto
 
         // Configurar nombres de tablas
+        // ---------------- Nombres de tablas ----------------
         modelBuilder.Entity<Asignatura>().ToTable("Asignatura");
         modelBuilder.Entity<ComentarioVideo>().ToTable("ComentarioVideo");
         modelBuilder.Entity<Curso>().ToTable("Curso");
@@ -76,5 +131,7 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<Respuesta>().ToTable("Respuesta");
         modelBuilder.Entity<ResultadoQuiz>().ToTable("ResultadoQuiz");
         modelBuilder.Entity<ValoracionQuiz>().ToTable("ValoracionQuiz");
+
+        modelBuilder.Entity<ReporteVideo>().ToTable("ReporteVideo");
     }
 }

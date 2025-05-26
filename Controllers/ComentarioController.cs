@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 public class ComentarioVideoController : ControllerBase
 {
     private readonly IComentarioVideoService _comentarioService;
+    private readonly IUsuarioService _usuarioService;
 
-    public ComentarioVideoController(IComentarioVideoService comentarioService)
+    public ComentarioVideoController(
+        IComentarioVideoService comentarioService,
+        IUsuarioService usuarioService)
     {
         _comentarioService = comentarioService;
+        _usuarioService = usuarioService;
     }
 
     [HttpGet("video/{idVideo}")]
@@ -28,10 +32,18 @@ public class ComentarioVideoController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Crear([FromBody] ComentarioVideo comentario)
+    public async Task<ActionResult> Crear([FromBody] ComentarioCrearDTO dto)
     {
-        await _comentarioService.AddAsync(comentario);
-        return CreatedAtAction(nameof(GetById), new { id = comentario.IdComentario }, comentario);
+        var nuevoComentario = new ComentarioVideo
+        {
+            IdUsuario = dto.IdUsuario,
+            IdVideo = dto.IdVideo,
+            Texto = dto.Texto,
+            Fecha = DateTime.UtcNow
+        };
+
+        await _comentarioService.AddAsync(nuevoComentario);
+        return CreatedAtAction(nameof(GetById), new { id = nuevoComentario.IdComentario }, nuevoComentario);
     }
 
     [HttpPut("{id}")]
@@ -48,5 +60,57 @@ public class ComentarioVideoController : ControllerBase
     {
         await _comentarioService.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpDelete("borrar-propio/{idComentario}")]
+    public async Task<IActionResult> BorrarComentario(int idComentario)
+    {
+        var comentario = await _comentarioService.GetByIdAsync(idComentario);
+        if (comentario == null)
+            return NotFound("Comentario no encontrado");
+
+        var usuario = await ObtenerUsuarioDesdeToken();
+        if (usuario == null)
+            return Unauthorized("Token inválido");
+
+        if (comentario.IdUsuario != usuario.IdUsuario)
+            return Forbid("No puedes borrar un comentario que no es tuyo");
+
+        await _comentarioService.DeleteAsync(idComentario);
+        return NoContent();
+    }
+
+    [HttpPut("reportar/{id}")]
+    public async Task<ActionResult> Reportar(int id)
+    {
+        var resultado = await _comentarioService.ReportarComentarioAsync(id);
+        if (!resultado)
+            return NotFound("Comentario no encontrado.");
+        return NoContent();
+    }
+
+    [HttpGet("reportados")]
+    public async Task<ActionResult<List<ComentarioVideo>>> GetReportados()
+    {
+        var comentarios = await _comentarioService.GetReportadosAsync();
+        return Ok(comentarios);
+    }
+
+    [HttpPut("quitar-reportes/{id}")]
+    public async Task<IActionResult> QuitarReportes(int id)
+    {
+        var comentario = await _comentarioService.GetByIdAsync(id);
+        if (comentario == null)
+            return NotFound();
+
+        comentario.NumeroReportes = 0;
+        await _comentarioService.UpdateAsync(comentario);
+        return NoContent();
+    }
+
+    private async Task<Usuario?> ObtenerUsuarioDesdeToken()
+    {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        return await _usuarioService.GetByTokenAsync(token);
     }
 }

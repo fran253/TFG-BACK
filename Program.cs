@@ -84,6 +84,12 @@ builder.Services.AddScoped<IFavoritoService, FavoritoService>();
 builder.Services.AddScoped<IReporteVideoService, ReporteVideoService>();
 
 // QUIZZES - NUEVO DISEÑO
+
+// PETICIONES
+builder.Services.AddScoped<IPeticionProfesorService, PeticionProfesorService>();
+
+
+// QUIZZES
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IPreguntaService, PreguntaService>();
 builder.Services.AddScoped<IRespuestaService, RespuestaService>();

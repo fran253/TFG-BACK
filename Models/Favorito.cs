@@ -9,8 +9,9 @@ public class Favorito
     [Key, Column(Order = 1)]
     public int IdVideo { get; set; }
 
-    public DateTime Fecha { get; set; } = DateTime.Now;
-
+    [ForeignKey("IdUsuario")]
     public Usuario Usuario { get; set; }
+
+    [ForeignKey("IdVideo")]
     public Video Video { get; set; }
 }
