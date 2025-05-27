@@ -26,6 +26,8 @@ namespace TFG_BACK.Models.DTOs
         public int IdUsuario { get; set; }
         public string NombreUsuario { get; set; }
         public string EmailUsuario { get; set; }
+        public int IdCurso { get; set; }
+        public int IdAsignatura { get; set; }
         public DateTime FechaCreacion { get; set; }
         public int TotalPreguntas { get; set; } = 0;
     }
@@ -39,6 +41,8 @@ namespace TFG_BACK.Models.DTOs
         public string NombreCreador { get; set; }
         public DateTime FechaCreacion { get; set; }
         public int TotalPreguntas { get; set; } = 0;
+        public int IdCurso { get; set; }       
+        public int IdAsignatura { get; set; } 
     }
 
     // DTO para actualizar quiz

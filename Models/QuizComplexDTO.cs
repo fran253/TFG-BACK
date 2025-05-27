@@ -8,16 +8,25 @@ namespace TFG_BACK.Models.DTOs
         [Required]
         [StringLength(100, MinimumLength = 3)]
         public string Nombre { get; set; }
-        
+
         public string? Descripcion { get; set; }
-        
+
         [Required]
         public int IdUsuario { get; set; }
-        
+
+        [Required(ErrorMessage = "El ID del curso es obligatorio")]
+        [Range(1, int.MaxValue, ErrorMessage = "El ID del curso debe ser mayor a 0")]
+        public int IdCurso { get; set; }
+
+        [Required(ErrorMessage = "El ID de la asignatura es obligatorio")]
+        [Range(1, int.MaxValue, ErrorMessage = "El ID de la asignatura debe ser mayor a 0")]
+        public int IdAsignatura { get; set; }
+
         [Required]
         [MaxLength(20, ErrorMessage = "Un quiz no puede tener más de 20 preguntas")]
         public List<CrearPreguntaDTO> Preguntas { get; set; } = new List<CrearPreguntaDTO>();
     }
+
     
     // DTO para crear una pregunta con sus respuestas
     public class CrearPreguntaDTO

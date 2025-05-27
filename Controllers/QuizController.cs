@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TFG_BACK.Models.DTOs;
+using Microsoft.EntityFrameworkCore;
+
 
 [Route("api/[controller]")]
 [ApiController]
@@ -7,12 +9,15 @@ public class QuizController : ControllerBase
 {
     private readonly IQuizService _quizService;
     private readonly IUsuarioService _usuarioService;
+    private readonly AcademIQDbContext _context;
 
-    public QuizController(IQuizService quizService, IUsuarioService usuarioService)
+    public QuizController(IQuizService quizService, IUsuarioService usuarioService, AcademIQDbContext context)
     {
         _quizService = quizService;
         _usuarioService = usuarioService;
+        _context = context;
     }
+
 
     // GET: api/quiz
     [HttpGet]
@@ -66,6 +71,21 @@ public class QuizController : ControllerBase
             return StatusCode(500, new { error = $"Error interno: {ex.Message}" });
         }
     }
+
+    [HttpGet("curso/{idCurso}")]
+    public async Task<ActionResult<List<QuizListDto>>> GetByCurso(int idCurso)
+    {
+        try
+        {
+            var quizzes = await _quizService.GetByCursoWithInfoAsync(idCurso);
+            return Ok(quizzes);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = $"Error interno: {ex.Message}" });
+        }
+    }
+
 
     // GET: api/quiz/populares
     [HttpGet("populares")]
@@ -123,11 +143,22 @@ public class QuizController : ControllerBase
             }
 
             // Crear el quiz
+            var asignaturaValida = await _context.Asignaturas
+                .AnyAsync(a => a.IdAsignatura == quizDto.IdAsignatura && a.IdCurso == quizDto.IdCurso);
+
+            if (!asignaturaValida)
+            {
+                return BadRequest(new { mensaje = "La asignatura no pertenece al curso indicado." });
+            }
+
+            // Crear el quiz con curso y asignatura
             var quiz = new Quiz
             {
                 Nombre = quizDto.Nombre,
                 Descripcion = quizDto.Descripcion,
                 IdUsuario = quizDto.IdUsuario,
+                IdCurso = quizDto.IdCurso,
+                IdAsignatura = quizDto.IdAsignatura,
                 FechaCreacion = DateTime.Now
             };
 

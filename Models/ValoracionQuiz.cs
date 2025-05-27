@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class ValoracionQuiz
 {
@@ -10,6 +11,8 @@ public class ValoracionQuiz
 
     [Required]
     public int IdQuiz { get; set; }
+    [JsonIgnore]
+    public Quiz Quiz { get; set; }
 
     [Required]
     [Range(1, 5)]

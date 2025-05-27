@@ -14,22 +14,25 @@ public class QuizService : IQuizService
     public async Task<List<QuizResponseDto>> GetAllWithUserInfoAsync()
     {
         var quizzes = await (from q in _context.Quizzes
-                           join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
-                           select new QuizResponseDto
-                           {
-                               IdQuiz = q.IdQuiz,
-                               Nombre = q.Nombre,
-                               Descripcion = q.Descripcion,
-                               IdUsuario = q.IdUsuario,
-                               NombreUsuario = u.Nombre,
-                               EmailUsuario = u.Gmail,
-                               FechaCreacion = q.FechaCreacion,
-                               TotalPreguntas = 0 // Por ahora 0, después contaremos las preguntas reales
-                           }).OrderByDescending(q => q.FechaCreacion)
-                           .ToListAsync();
+                            join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
+                            select new QuizResponseDto
+                            {
+                                IdQuiz = q.IdQuiz,
+                                Nombre = q.Nombre,
+                                Descripcion = q.Descripcion,
+                                IdUsuario = q.IdUsuario,
+                                NombreUsuario = u.Nombre,
+                                EmailUsuario = u.Gmail,
+                                FechaCreacion = q.FechaCreacion,
+                                TotalPreguntas = 0,
+                                IdCurso = q.IdCurso,
+                                IdAsignatura = q.IdAsignatura,
+                            }).OrderByDescending(q => q.FechaCreacion)
+                            .ToListAsync();
 
         return quizzes;
     }
+
 
     public async Task<List<Quiz>> GetAllAsync()
     {
@@ -37,6 +40,29 @@ public class QuizService : IQuizService
             .OrderByDescending(q => q.FechaCreacion)
             .ToListAsync();
     }
+
+    public async Task<List<QuizListDto>> GetByCursoWithInfoAsync(int idCurso)
+    {
+        var quizzes = await (from q in _context.Quizzes
+                            join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
+                            where q.IdCurso == idCurso
+                            select new QuizListDto
+                            {
+                                IdQuiz = q.IdQuiz,
+                                Nombre = q.Nombre,
+                                Descripcion = q.Descripcion,
+                                NombreCreador = u.Nombre,
+                                FechaCreacion = q.FechaCreacion,
+                                TotalPreguntas = 0,
+                                IdCurso = q.IdCurso,             
+                                IdAsignatura = q.IdAsignatura,   
+                            }).OrderByDescending(q => q.FechaCreacion)
+                            .ToListAsync();
+
+        return quizzes;
+    }
+
+
 
     public async Task<QuizResponseDto?> GetByIdWithUserInfoAsync(int id)
     {
@@ -74,6 +100,8 @@ public class QuizService : IQuizService
                                Nombre = q.Nombre,
                                Descripcion = q.Descripcion,
                                NombreCreador = u.Nombre,
+                               IdCurso = q.IdCurso,
+                               IdAsignatura = q.IdAsignatura,
                                FechaCreacion = q.FechaCreacion,
                                TotalPreguntas = 0
                            }).OrderByDescending(q => q.FechaCreacion)
@@ -100,6 +128,8 @@ public class QuizService : IQuizService
                                Nombre = q.Nombre,
                                Descripcion = q.Descripcion,
                                NombreCreador = u.Nombre,
+                               IdCurso = q.IdCurso,
+                               IdAsignatura = q.IdAsignatura,
                                FechaCreacion = q.FechaCreacion,
                                TotalPreguntas = 0
                            }).OrderByDescending(q => q.FechaCreacion)
@@ -159,7 +189,7 @@ public class QuizService : IQuizService
                               Nombre = q.Nombre,
                               NombreCreador = u.Nombre,
                               FechaCreacion = q.FechaCreacion,
-                              TotalPreguntas = 0, // Después lo calcularemos con las preguntas reales
+                              TotalPreguntas = 0, 
                               TotalRespuestas = 0,
                               VecesRespondido = 0
                           }).FirstOrDefaultAsync();

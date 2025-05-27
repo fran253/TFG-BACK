@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class ResultadoQuiz
 {
@@ -10,6 +11,8 @@ public class ResultadoQuiz
 
     [Required]
     public int IdQuiz { get; set; }
+    [JsonIgnore]
+    public Quiz Quiz { get; set; }
 
     public decimal Puntuacion { get; set; }
 

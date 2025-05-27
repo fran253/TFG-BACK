@@ -10,6 +10,8 @@ public interface IQuizService
     Task UpdateAsync(Quiz quiz);
     Task DeleteAsync(int id);
     Task<bool> ValidarLimiteQuizzesUsuarioAsync(int idUsuario);
+    Task<List<QuizListDto>> GetByCursoWithInfoAsync(int idCurso);
+
     
     // Métodos con DTOs (incluyen información del usuario)
     Task<List<QuizResponseDto>> GetAllWithUserInfoAsync();
