@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class Respuesta
 {
@@ -15,6 +16,8 @@ public class Respuesta
     public bool EsCorrecta { get; set; } = false;
 
     public int Orden { get; set; } = 1;
+    [JsonIgnore]
+    public Pregunta Pregunta { get; set; }
 
     // NO propiedades de navegación por ahora
 }

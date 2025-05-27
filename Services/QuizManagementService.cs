@@ -14,20 +14,29 @@ public class QuizManagementService : IQuizManagementService
 
     public async Task<int> CrearQuizCompletoAsync(CrearQuizCompletoDTO quizDTO)
     {
-        // Por ahora solo creamos el quiz básico
-        // Las preguntas las implementaremos después
-        
+        // Validar que la asignatura pertenece al curso
+        var asignaturaValida = await _context.Asignaturas
+            .AnyAsync(a => a.IdAsignatura == quizDTO.IdAsignatura && a.IdCurso == quizDTO.IdCurso);
+
+        if (!asignaturaValida)
+        {
+            throw new InvalidOperationException("La asignatura no pertenece al curso indicado.");
+        }
+
         var quiz = new Quiz
         {
             Nombre = quizDTO.Nombre,
             Descripcion = quizDTO.Descripcion,
             IdUsuario = quizDTO.IdUsuario,
+            IdCurso = quizDTO.IdCurso,
+            IdAsignatura = quizDTO.IdAsignatura,
             FechaCreacion = DateTime.Now
         };
 
         var idQuiz = await _quizService.AddAsync(quiz);
         return idQuiz;
     }
+
 
     public async Task<ResultadoQuizDTO> ProcesarRespuestasAsync(ResponderQuizDTO respuestasDTO)
     {
