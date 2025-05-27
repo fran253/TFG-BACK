@@ -108,31 +108,7 @@ public class AcademIQDbContext : DbContext
             .HasForeignKey(s => s.IdProfesor)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // --------------------- Relaciones Quiz ---------------------
-
-        modelBuilder.Entity<Pregunta>()
-            .HasOne(p => p.Quiz)
-            .WithMany(q => q.Preguntas)
-            .HasForeignKey(p => p.IdQuiz)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Respuesta>()
-            .HasOne(r => r.Pregunta)
-            .WithMany(p => p.Respuestas)
-            .HasForeignKey(r => r.IdPregunta)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<ResultadoQuiz>()
-            .HasOne(r => r.Quiz)
-            .WithMany(q => q.Resultados)
-            .HasForeignKey(r => r.IdQuiz)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<ValoracionQuiz>()
-            .HasOne(v => v.Quiz)
-            .WithMany(q => q.Valoraciones)
-            .HasForeignKey(v => v.IdQuiz)
-            .OnDelete(DeleteBehavior.Cascade);
+        
 
 
         // Nombres de tablas
