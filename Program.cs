@@ -91,8 +91,7 @@ builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IPreguntaService, PreguntaService>();
 builder.Services.AddScoped<IRespuestaService, RespuestaService>();
 builder.Services.AddScoped<IQuizManagementService, QuizManagementService>();
-builder.Services.AddScoped<IResultadoQuizService, ResultadoQuizService>();
-builder.Services.AddScoped<IValoracionQuizService, ValoracionQuizService>();
+
 
 // RELACIONES
 builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();

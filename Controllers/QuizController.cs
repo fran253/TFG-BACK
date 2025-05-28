@@ -105,24 +105,7 @@ public class QuizController : ControllerBase
         }
     }
 
-    // GET: api/quiz/{id}/estadisticas
-    [HttpGet("{id}/estadisticas")]
-    public async Task<ActionResult<QuizStatsDto>> GetEstadisticas(int id)
-    {
-        try
-        {
-            var stats = await _quizService.GetEstadisticasAsync(id);
-            if (stats == null)
-                return NotFound(new { mensaje = $"No se encontró el quiz con ID {id}" });
-
-            return Ok(stats);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = $"Error interno: {ex.Message}" });
-        }
-    }
-
+    
     // POST: api/quiz
     [HttpPost]
     public async Task<ActionResult<object>> Create([FromBody] QuizCreateDto quizDto)

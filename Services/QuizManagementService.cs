@@ -38,40 +38,9 @@ public class QuizManagementService : IQuizManagementService
     }
 
 
-    public async Task<ResultadoQuizDTO> ProcesarRespuestasAsync(ResponderQuizDTO respuestasDTO)
-    {
-        // Implementación básica - por ahora retorna resultado vacío
-        return new ResultadoQuizDTO
-        {
-            TotalPreguntas = 0,
-            RespuestasCorrectas = 0,
-            Porcentaje = 0,
-            Detalles = new List<ResultadoDetallePreguntaDTO>()
-        };
-    }
 
-    public async Task<EstadisticasQuizDTO> ObtenerEstadisticasQuizAsync(int idQuiz)
-    {
-        var quiz = await _context.Quizzes.FirstOrDefaultAsync(q => q.IdQuiz == idQuiz);
-        
-        if (quiz == null)
-            throw new KeyNotFoundException($"No se encontró el quiz con ID {idQuiz}");
 
-        // Buscar usuario por separado usando JOIN manual
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == quiz.IdUsuario);
-
-        return new EstadisticasQuizDTO
-        {
-            IdQuiz = quiz.IdQuiz,
-            Nombre = quiz.Nombre,
-            TotalPreguntas = 0, // Por ahora 0
-            TotalRespuestas = 0, // Por ahora 0
-            PromedioCalificaciones = 0,
-            PromedioValoraciones = 0,
-            FechaCreacion = quiz.FechaCreacion,
-            NombreCreador = usuario?.Nombre ?? "Usuario desconocido"
-        };
-    }
+   
 
     public async Task<bool> EliminarQuizCompletoAsync(int idQuiz, int idUsuario)
     {

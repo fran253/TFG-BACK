@@ -54,10 +54,7 @@ public class Usuario
     public ICollection<Favorito> Favoritos { get; set; } = new List<Favorito>();
 
 
-    // SIN QUIZZES - se eliminó la línea
-    [JsonIgnore]
-    public ICollection<ResultadoQuiz> Resultados { get; set; }
-
+    
     public Usuario()
     {
         Seguidores = new List<Seguimiento>();
@@ -68,6 +65,5 @@ public class Usuario
         Comentarios = new List<ComentarioVideo>();
         Favoritos = new List<Favorito>();
         // Quizzes = new List<Quiz>(); // ELIMINADO
-        Resultados = new List<ResultadoQuiz>();
     }
 }

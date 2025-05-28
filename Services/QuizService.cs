@@ -178,22 +178,5 @@ public class QuizService : IQuizService
         return await _context.Quizzes.AnyAsync(q => q.IdQuiz == idQuiz && q.IdUsuario == idUsuario);
     }
 
-    public async Task<QuizStatsDto?> GetEstadisticasAsync(int idQuiz)
-    {
-        var stats = await (from q in _context.Quizzes
-                          join u in _context.Usuarios on q.IdUsuario equals u.IdUsuario
-                          where q.IdQuiz == idQuiz
-                          select new QuizStatsDto
-                          {
-                              IdQuiz = q.IdQuiz,
-                              Nombre = q.Nombre,
-                              NombreCreador = u.Nombre,
-                              FechaCreacion = q.FechaCreacion,
-                              TotalPreguntas = 0, 
-                              TotalRespuestas = 0,
-                              VecesRespondido = 0
-                          }).FirstOrDefaultAsync();
-
-        return stats;
-    }
+   
 }

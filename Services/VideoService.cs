@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TFG_BACK.Models.Common;
 
 public class VideoService : IVideoService
 {
@@ -12,12 +13,67 @@ public class VideoService : IVideoService
         _context = context;
     }
 
+    // metodos paginados
+    public async Task<PagedResult<Video>> GetAllPagedAsync(int page = 1, int pageSize = 20)
+    {
+        var pagination = new PaginationRequest { Page = page, PageSize = pageSize };
+        
+        var totalCount = await _context.Videos.CountAsync();
+        
+        var videos = await _context.Videos
+            .Include(v => v.Asignatura)
+            .Include(v => v.Usuario)
+            .Include(v => v.Curso)
+            .OrderByDescending(v => v.FechaSubida)
+            .Skip((pagination.Page - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync();
+
+        return new PagedResult<Video>
+        {
+            Items = videos,
+            TotalCount = totalCount,
+            Page = pagination.Page,
+            PageSize = pagination.PageSize
+        };
+    }
+
+
+    public async Task<PagedResult<Video>> GetByCursoPagedAsync(int idCurso, int page = 1, int pageSize = 20)
+    {
+        var pagination = new PaginationRequest { Page = page, PageSize = pageSize };
+        
+        var totalCount = await _context.Videos
+            .Where(v => v.IdCurso == idCurso)
+            .CountAsync();
+        
+        var videos = await _context.Videos
+            .Where(v => v.IdCurso == idCurso)
+            .Include(v => v.Asignatura)
+            .Include(v => v.Usuario)
+            .Include(v => v.Curso)
+            .OrderByDescending(v => v.FechaSubida)
+            .Skip((pagination.Page - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync();
+
+        return new PagedResult<Video>
+        {
+            Items = videos,
+            TotalCount = totalCount,
+            Page = pagination.Page,
+            PageSize = pagination.PageSize
+        };
+    }
+
+
     public async Task<List<Video>> GetAllAsync()
     {
         return await _context.Videos
             .Include(v => v.Asignatura)
             .Include(v => v.Usuario)
             .Include(v => v.Curso)
+            .OrderByDescending(v => v.FechaSubida)
             .ToListAsync();
     }
 
@@ -37,6 +93,7 @@ public class VideoService : IVideoService
             .Include(v => v.Asignatura)
             .Include(v => v.Usuario)
             .Include(v => v.Curso)
+            .OrderByDescending(v => v.FechaSubida)
             .ToListAsync();
     }
 
@@ -46,6 +103,8 @@ public class VideoService : IVideoService
             .Where(v => v.IdAsignatura == idAsignatura)
             .Include(v => v.Asignatura)
             .Include(v => v.Usuario)
+            .Include(v => v.Curso)
+            .OrderByDescending(v => v.FechaSubida)
             .ToListAsync();
     }
 
@@ -56,6 +115,7 @@ public class VideoService : IVideoService
             .Include(v => v.Asignatura)
             .Include(v => v.Usuario)
             .Include(v => v.Curso)
+            .OrderByDescending(v => v.FechaSubida)
             .ToListAsync();
     }
 
@@ -63,6 +123,10 @@ public class VideoService : IVideoService
     {
         return await _context.Videos
             .Where(v => v.IdUsuario == idUsuario)
+            .Include(v => v.Asignatura)
+            .Include(v => v.Usuario)
+            .Include(v => v.Curso)
+            .OrderByDescending(v => v.FechaSubida)
             .ToListAsync();
     }
 
@@ -96,6 +160,7 @@ public class VideoService : IVideoService
             .Include(v => v.Asignatura)
             .Include(v => v.Usuario)
             .Include(v => v.Curso)
+            .OrderByDescending(v => v.NumReportes)
             .ToListAsync();
     }
     
@@ -104,6 +169,4 @@ public class VideoService : IVideoService
         var video = await _context.Videos.FindAsync(idVideo);
         return video?.ContadorLikes ?? 0;
     }
-
-
 }

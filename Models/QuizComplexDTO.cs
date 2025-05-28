@@ -73,14 +73,7 @@ namespace TFG_BACK.Models.DTOs
         public List<int> IdRespuestasSeleccionadas { get; set; } = new List<int>();
     }
     
-    // DTO para el resultado del quiz
-    public class ResultadoQuizDTO
-    {
-        public int TotalPreguntas { get; set; }
-        public int RespuestasCorrectas { get; set; }
-        public decimal Porcentaje { get; set; }
-        public List<ResultadoDetallePreguntaDTO> Detalles { get; set; } = new List<ResultadoDetallePreguntaDTO>();
-    }
+    
     
     // DTO para el detalle del resultado por pregunta
     public class ResultadoDetallePreguntaDTO
@@ -145,18 +138,7 @@ namespace TFG_BACK.Models.DTOs
         public int Orden { get; set; }
     }
     
-    // DTO para estadísticas de un quiz
-    public class EstadisticasQuizDTO
-    {
-        public int IdQuiz { get; set; }
-        public string Nombre { get; set; }
-        public int TotalPreguntas { get; set; }
-        public int TotalRespuestas { get; set; }
-        public decimal PromedioCalificaciones { get; set; }
-        public double PromedioValoraciones { get; set; }
-        public DateTime FechaCreacion { get; set; }
-        public string NombreCreador { get; set; }
-    }
+   
 
     // DTO para respuesta de creación de quiz
     public class QuizCreadoResponseDTO

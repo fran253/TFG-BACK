@@ -18,6 +18,5 @@ public interface IQuizService
     Task<QuizResponseDto?> GetByIdWithUserInfoAsync(int id);
     Task<List<QuizListDto>> GetByUsuarioWithInfoAsync(int idUsuario);
     Task<List<QuizListDto>> GetQuizzesPopularesAsync(int limite = 10);
-    Task<QuizStatsDto?> GetEstadisticasAsync(int idQuiz);
     Task<bool> UsuarioEsPropietarioAsync(int idQuiz, int idUsuario);
 }
