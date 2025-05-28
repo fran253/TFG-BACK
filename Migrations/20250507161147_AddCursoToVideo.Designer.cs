@@ -239,34 +239,6 @@ namespace TFG_BACK.Migrations
                     b.ToTable("Quiz", (string)null);
                 });
 
-            modelBuilder.Entity("ResultadoQuiz", b =>
-                {
-                    b.Property<int>("IdResultado")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdResultado"));
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("IdQuiz")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Puntuacion")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("IdResultado");
-
-                    b.HasIndex("IdQuiz");
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("ResultadoQuiz", (string)null);
-                });
 
             modelBuilder.Entity("Rol", b =>
                 {

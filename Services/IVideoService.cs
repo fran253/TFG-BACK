@@ -1,5 +1,12 @@
+using TFG_BACK.Models.Common;
+
 public interface IVideoService
 {
+
+    Task<PagedResult<Video>> GetAllPagedAsync(int page = 1, int pageSize = 20);
+    Task<PagedResult<Video>> GetByCursoPagedAsync(int idCurso, int page = 1, int pageSize = 20);
+
+
     Task<List<Video>> GetAllAsync();
     Task<Video?> GetByIdAsync(int id);
     Task<List<Video>> GetByCursoAsync(int idCurso);

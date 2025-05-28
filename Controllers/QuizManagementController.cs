@@ -41,27 +41,6 @@ public class QuizManagementController : ControllerBase
         }
     }
 
-    // POST: api/quizmanagement/responder
-    [HttpPost("responder")]
-    public async Task<ActionResult<ResultadoQuizDTO>> ResponderQuiz([FromBody] ResponderQuizDTO respuestasDTO)
-    {
-        try
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var resultado = await _quizManagementService.ProcesarRespuestasAsync(respuestasDTO);
-            return Ok(resultado);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-        }
-    }
 
     // GET: api/quizmanagement/{id}/para-responder
     [HttpGet("{id}/para-responder")]
@@ -101,24 +80,6 @@ public class QuizManagementController : ControllerBase
         }
     }
 
-    // GET: api/quizmanagement/{id}/estadisticas
-    [HttpGet("{id}/estadisticas")]
-    public async Task<ActionResult<EstadisticasQuizDTO>> ObtenerEstadisticas(int id)
-    {
-        try
-        {
-            var estadisticas = await _quizManagementService.ObtenerEstadisticasQuizAsync(id);
-            return Ok(estadisticas);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-        }
-    }
 
     // DELETE: api/quizmanagement/{id}/usuario/{idUsuario}
     [HttpDelete("{id}/usuario/{idUsuario}")]

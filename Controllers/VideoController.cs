@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TuProyecto.Api.DTOs;
 using TuProyecto.Api.DTOs.Marcador;
 using TFG_BACK.Services;
+using TFG_BACK.Models.Common;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -20,7 +21,27 @@ public class VideoController : ControllerBase
         _s3UploaderService = s3UploaderService;
     }
 
-    // GET: api/video
+    // endpoints paginados
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResult<Video>>> GetAllPaged(
+        [FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 20)
+    {
+        var result = await _videoService.GetAllPagedAsync(page, pageSize);
+        return Ok(result);
+    }
+
+
+    [HttpGet("curso/{idCurso}/paged")]
+    public async Task<ActionResult<PagedResult<Video>>> GetByCursoPaged(
+        int idCurso,
+        [FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 20)
+    {
+        var result = await _videoService.GetByCursoPagedAsync(idCurso, page, pageSize);
+        return Ok(result);
+    }
+
     [HttpGet]
     public async Task<ActionResult<List<Video>>> GetAll()
     {
@@ -28,7 +49,6 @@ public class VideoController : ControllerBase
         return Ok(videos);
     }
 
-    // GET: api/video/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<Video>> GetById(int id)
     {
@@ -38,7 +58,6 @@ public class VideoController : ControllerBase
         return Ok(video);
     }
 
-    // GET: api/video/curso/{idCurso}
     [HttpGet("curso/{idCurso}")]
     public async Task<ActionResult<List<Video>>> GetByCurso(int idCurso)
     {
@@ -46,7 +65,6 @@ public class VideoController : ControllerBase
         return Ok(lista);
     }
 
-    // GET: api/video/curso/{idCurso}/asignatura/{idAsignatura}
     [HttpGet("curso/{idCurso}/asignatura/{idAsignatura}")]
     public async Task<ActionResult<List<Video>>> GetByCursoAndAsignatura(int idCurso, int idAsignatura)
     {
@@ -54,22 +72,13 @@ public class VideoController : ControllerBase
         return Ok(lista);
     }
 
-    // GET: api/video/usuario/{idUsuario} - YA EXISTE, ACTUALIZADO CON TRY-CATCH
     [HttpGet("usuario/{idUsuario}")]
     public async Task<ActionResult<List<Video>>> GetVideosByUsuario(int idUsuario)
     {
-        try
-        {
-            var videos = await _videoService.GetByUsuarioAsync(idUsuario);
-            return Ok(videos);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-        }
+        var videos = await _videoService.GetByUsuarioAsync(idUsuario);
+        return Ok(videos);
     }
 
-    // PUT: api/video/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult> Editar(int id, [FromBody] Video video)
     {
@@ -79,7 +88,6 @@ public class VideoController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/video/{id}
     [HttpDelete("{id}")]
     public async Task<ActionResult> Eliminar(int id)
     {
@@ -91,7 +99,6 @@ public class VideoController : ControllerBase
         return NoContent();
     }
 
-    // POST: api/video/registrar
     [HttpPost("registrar")]
     public async Task<ActionResult> RegistrarVideo([FromForm] RegistrarVideoRequest request)
     {
@@ -136,8 +143,6 @@ public class VideoController : ControllerBase
         return NoContent();
     }
 
-
-    // GET: api/video/reportados
     [HttpGet("reportados")]
     public async Task<ActionResult<List<Video>>> GetVideosReportados()
     {
@@ -151,5 +156,4 @@ public class VideoController : ControllerBase
         var total = await _videoService.GetContadorLikesAsync(idVideo);
         return Ok(total);
     }
-
 }

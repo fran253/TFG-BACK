@@ -23,8 +23,7 @@ public class AcademIQDbContext : DbContext
     public DbSet<Quiz> Quizzes { get; set; }
     public DbSet<Pregunta> Preguntas { get; set; }
     public DbSet<Respuesta> Respuestas { get; set; }
-    public DbSet<ResultadoQuiz> ResultadosQuiz { get; set; }
-    public DbSet<ValoracionQuiz> ValoracionesQuiz { get; set; }
+
 
     // Extra
     public DbSet<PeticionProfesor> PeticionProfesor { get; set; }
@@ -128,8 +127,6 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<Quiz>().ToTable("Quiz");
         modelBuilder.Entity<Pregunta>().ToTable("Pregunta");
         modelBuilder.Entity<Respuesta>().ToTable("Respuesta");
-        modelBuilder.Entity<ResultadoQuiz>().ToTable("ResultadoQuiz");
-        modelBuilder.Entity<ValoracionQuiz>().ToTable("ValoracionQuiz");
 
         modelBuilder.Entity<ReporteVideo>().ToTable("ReporteVideo");
     }
