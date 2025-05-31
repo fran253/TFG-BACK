@@ -7,6 +7,9 @@ public interface ICursoService
     Task DeleteAsync(int id);
     Task<Curso?> AddCursoConUsuarioAsync(CursoCrearDTO dto, int idUsuario, string? urlImagen = null);
     Task<List<CursoVideosDTO>> GetTopCursosConMasVideosAsync(int cantidad);
-    Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario); 
+    Task<List<Curso>> GetCursosPorUsuarioAsync(int idUsuario);
+    
+    // NUEVOS MÉTODOS PARA ESTADÍSTICAS
+    Task<int> ContarCursosPorUsuarioAsync(int idUsuario);
+    Task<Curso> ObtenerUltimoCursoPorUsuarioAsync(int idUsuario);
 }
-

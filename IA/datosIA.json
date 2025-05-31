@@ -1,23 +1,144 @@
 [
   {
+    "tipo": "plataforma",
+    "nombre": "AcademIQ",
+    "descripcion": "Plataforma educativa completa con cursos, videos, quizzes y sistema de seguimiento de profesores",
+    "funcionalidades": [
+      "Registro de estudiantes y profesores",
+      "Creación y gestión de cursos",
+      "Subida y visualización de videos educativos", 
+      "Sistema de quizzes interactivos",
+      "Seguimiento de profesores favoritos",
+      "Marcadores en videos para navegación rápida"
+    ]
+  },
+  {
     "tipo": "curso",
     "nombre": "Desarrollo Web",
-    "asignaturas": ["HTML", "CSS", "JavaScript"]
+    "descripcion": "Aprende a crear aplicaciones web modernas desde cero",
+    "asignaturas": ["HTML", "CSS", "JavaScript", "React"]
+  },
+  {
+    "tipo": "curso", 
+    "nombre": "Programación Backend",
+    "descripcion": "Domina el desarrollo del lado del servidor",
+    "asignaturas": ["Node.js", "Express", "Bases de Datos", "APIs REST"]
   },
   {
     "tipo": "asignatura",
     "nombre": "HTML",
-    "descripcion": "Aprende a estructurar páginas web con etiquetas semánticas."
+    "descripcion": "Aprende a estructurar páginas web con etiquetas semánticas y formularios",
+    "curso": "Desarrollo Web"
+  },
+  {
+    "tipo": "asignatura",
+    "nombre": "CSS",
+    "descripcion": "Estilos, layouts, responsive design y animaciones",
+    "curso": "Desarrollo Web"
+  },
+  {
+    "tipo": "asignatura",
+    "nombre": "JavaScript",
+    "descripcion": "Programación interactiva, DOM manipulation y ES6+",
+    "curso": "Desarrollo Web"
+  },
+  {
+    "tipo": "asignatura",
+    "nombre": "Node.js",
+    "descripcion": "JavaScript del lado del servidor y npm",
+    "curso": "Programación Backend"
   },
   {
     "tipo": "video",
-    "titulo": "Etiquetas HTML básicas",
-    "descripcion": "Explicación de etiquetas <p>, <h1>, <div>, etc.",
+    "titulo": "Introducción a HTML5",
+    "descripcion": "Conceptos básicos y nuevas etiquetas semánticas",
+    "asignatura": "HTML",
+    "curso": "Desarrollo Web"
+  },
+  {
+    "tipo": "video",
+    "titulo": "Flexbox y Grid CSS",
+    "descripcion": "Sistemas modernos de layout en CSS",
+    "asignatura": "CSS", 
+    "curso": "Desarrollo Web"
+  },
+  {
+    "tipo": "video",
+    "titulo": "Funciones y Scope en JavaScript",
+    "descripcion": "Entendiendo las funciones, closures y scope",
+    "asignatura": "JavaScript",
+    "curso": "Desarrollo Web"
+  },
+  {
+    "tipo": "quiz",
+    "nombre": "Evaluación HTML Básico",
+    "descripcion": "Quiz sobre etiquetas fundamentales y estructura HTML",
     "asignatura": "HTML"
   },
   {
+    "tipo": "quiz",
+    "nombre": "CSS Selectores y Propiedades", 
+    "descripcion": "Evaluación sobre selectores CSS y propiedades comunes",
+    "asignatura": "CSS"
+  },
+  {
     "tipo": "faq",
-    "pregunta": "¿Cómo me registro?",
-    "respuesta": "Haz clic en el botón 'Registrarse' en la esquina superior y completa el formulario."
+    "categoria": "registro",
+    "pregunta": "¿Cómo me registro en AcademIQ?",
+    "respuesta": "Haz clic en el botón 'Registrarse' en la esquina superior derecha, completa el formulario con tu información personal y selecciona si eres estudiante o profesor."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "contenido",
+    "pregunta": "¿Cómo subo un video como profesor?",
+    "respuesta": "Ve a tu panel de profesor, selecciona 'Subir Video', elige el archivo de video y miniatura, selecciona curso y asignatura, completa título y descripción, y haz clic en 'Publicar'."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "cursos",
+    "pregunta": "¿Cómo me inscribo a un curso?",
+    "respuesta": "Explora los cursos disponibles, haz clic en el que te interese, revisa el contenido y asignaturas, y haz clic en 'Inscribirse'. Necesitas estar registrado como estudiante."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "seguimiento",
+    "pregunta": "¿Cómo sigo a un profesor?",
+    "respuesta": "Ve al perfil del profesor que te interese y haz clic en 'Seguir'. Recibirás notificaciones cuando publique nuevo contenido."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "quizzes",
+    "pregunta": "¿Cómo funcionan los quizzes?",
+    "respuesta": "Los profesores crean quizzes con preguntas de opción múltiple. Como estudiante, puedes responderlos y ver tus resultados inmediatamente. Algunos tienen límite de tiempo."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "videos",
+    "pregunta": "¿Puedo marcar partes importantes de un video?",
+    "respuesta": "Sí, puedes crear marcadores en momentos específicos del video haciendo clic en el botón 'Agregar marcador'. Esto te permite navegar rápidamente a partes importantes."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "favoritos",
+    "pregunta": "¿Cómo guardo videos favoritos?",
+    "respuesta": "Haz clic en el icono de corazón en cualquier video para agregarlo a tu lista de favoritos. Puedes acceder a tus favoritos desde tu perfil."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "busqueda",
+    "pregunta": "¿Cómo busco contenido específico?",
+    "respuesta": "Usa la barra de búsqueda para encontrar cursos, videos o asignaturas por palabra clave. También puedes filtrar por categorías en cada sección."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "roles",
+    "pregunta": "¿Cuál es la diferencia entre estudiante y profesor?",
+    "respuesta": "Los estudiantes pueden ver contenido, hacer quizzes, seguir profesores y guardar favoritos. Los profesores pueden crear cursos, subir videos, crear quizzes y gestionar su contenido."
+  },
+  {
+    "tipo": "faq",
+    "categoria": "soporte",
+    "pregunta": "¿Cómo contacto al soporte técnico?",
+    "respuesta": "Si tienes problemas técnicos o preguntas no resueltas, puedes contactar al equipo de soporte a través del formulario de contacto en la sección de ayuda."
   }
 ]

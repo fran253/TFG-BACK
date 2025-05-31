@@ -178,5 +178,16 @@ public class QuizService : IQuizService
         return await _context.Quizzes.AnyAsync(q => q.IdQuiz == idQuiz && q.IdUsuario == idUsuario);
     }
 
-   
+   public async Task<int> ContarQuizzesPorUsuarioAsync(int idUsuario)
+    {
+        return await _context.Quizzes.CountAsync(q => q.IdUsuario == idUsuario);
+    }
+
+    public async Task<Quiz> ObtenerUltimoQuizPorUsuarioAsync(int idUsuario)
+    {
+        return await _context.Quizzes
+            .Where(q => q.IdUsuario == idUsuario)
+            .OrderByDescending(q => q.FechaCreacion)
+            .FirstOrDefaultAsync();
+    }
 }

@@ -19,4 +19,7 @@ public interface IVideoService
     Task DeleteAsync(int id);
     Task<int> GetContadorLikesAsync(int idVideo);
 
+    Task<int> ContarVideosPorUsuarioAsync(int idUsuario);
+    Task<Video> ObtenerUltimoVideoPorUsuarioAsync(int idUsuario);
+
 }

@@ -24,7 +24,6 @@ public class AcademIQDbContext : DbContext
     public DbSet<Pregunta> Preguntas { get; set; }
     public DbSet<Respuesta> Respuestas { get; set; }
 
-
     // Extra
     public DbSet<PeticionProfesor> PeticionProfesor { get; set; }
 
@@ -44,6 +43,36 @@ public class AcademIQDbContext : DbContext
         modelBuilder.Entity<Seguimiento>()
             .HasKey(s => new { s.IdAlumno, s.IdProfesor });
 
+        // =================== CONFIGURACIÓN QUIZ ===================
+        // Relación Quiz -> Asignatura
+        modelBuilder.Entity<Quiz>()
+            .HasOne<Asignatura>()
+            .WithMany(a => a.Quizzes)
+            .HasForeignKey(q => q.IdAsignatura)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Relación Quiz -> Curso (opcional)
+        modelBuilder.Entity<Quiz>()
+            .HasOne<Curso>()
+            .WithMany()
+            .HasForeignKey(q => q.IdCurso)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Relación Pregunta -> Quiz
+        modelBuilder.Entity<Pregunta>()
+            .HasOne<Quiz>()
+            .WithMany()
+            .HasForeignKey(p => p.IdQuiz)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Relación Respuesta -> Pregunta
+        modelBuilder.Entity<Respuesta>()
+            .HasOne<Pregunta>()
+            .WithMany()
+            .HasForeignKey(r => r.IdPregunta)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // =================== OTRAS RELACIONES ===================
         // Relaciones UsuarioCurso
         modelBuilder.Entity<UsuarioCurso>()
             .HasOne(uc => uc.Usuario)
@@ -72,9 +101,6 @@ public class AcademIQDbContext : DbContext
 
         // Relaciones Favorito
         modelBuilder.Entity<Favorito>()
-            .HasKey(f => new { f.IdUsuario, f.IdVideo });
-
-        modelBuilder.Entity<Favorito>()
             .HasOne(f => f.Usuario)
             .WithMany(u => u.Favoritos)
             .HasForeignKey(f => f.IdUsuario)
@@ -85,7 +111,6 @@ public class AcademIQDbContext : DbContext
             .WithMany(v => v.Favoritos)
             .HasForeignKey(f => f.IdVideo)
             .OnDelete(DeleteBehavior.Cascade);
-
 
         // Relaciones PeticionProfesor
         modelBuilder.Entity<PeticionProfesor>()
@@ -106,9 +131,6 @@ public class AcademIQDbContext : DbContext
             .WithMany(u => u.Seguidos)
             .HasForeignKey(s => s.IdProfesor)
             .OnDelete(DeleteBehavior.Restrict);
-
-        
-
 
         // Nombres de tablas
         modelBuilder.Entity<Asignatura>().ToTable("Asignatura");
