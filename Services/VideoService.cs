@@ -169,4 +169,18 @@ public class VideoService : IVideoService
         var video = await _context.Videos.FindAsync(idVideo);
         return video?.ContadorLikes ?? 0;
     }
+
+
+    public async Task<int> ContarVideosPorUsuarioAsync(int idUsuario)
+    {
+        return await _context.Videos.CountAsync(v => v.IdUsuario == idUsuario);
+    }
+
+    public async Task<Video> ObtenerUltimoVideoPorUsuarioAsync(int idUsuario)
+    {
+        return await _context.Videos
+            .Where(v => v.IdUsuario == idUsuario)
+            .OrderByDescending(v => v.FechaSubida)
+            .FirstOrDefaultAsync();
+    }
 }

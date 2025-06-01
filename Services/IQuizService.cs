@@ -11,7 +11,6 @@ public interface IQuizService
     Task DeleteAsync(int id);
     Task<bool> ValidarLimiteQuizzesUsuarioAsync(int idUsuario);
     Task<List<QuizListDto>> GetByCursoWithInfoAsync(int idCurso);
-
     
     // Métodos con DTOs (incluyen información del usuario)
     Task<List<QuizResponseDto>> GetAllWithUserInfoAsync();
@@ -19,4 +18,8 @@ public interface IQuizService
     Task<List<QuizListDto>> GetByUsuarioWithInfoAsync(int idUsuario);
     Task<List<QuizListDto>> GetQuizzesPopularesAsync(int limite = 10);
     Task<bool> UsuarioEsPropietarioAsync(int idQuiz, int idUsuario);
+    
+    // NUEVOS MÉTODOS PARA ESTADÍSTICAS
+    Task<int> ContarQuizzesPorUsuarioAsync(int idUsuario);
+    Task<Quiz> ObtenerUltimoQuizPorUsuarioAsync(int idUsuario);
 }

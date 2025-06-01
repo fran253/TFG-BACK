@@ -1,6 +1,94 @@
+# Test de IA para AcademIQ
+# Usar con la extensión REST Client de VSCode
+
+### 1. Probar conectividad básica
+GET http://localhost:3001/api/ia/health
+Content-Type: application/json
+
+### 2. Pregunta sobre registro
 POST http://localhost:3001/api/ia
 Content-Type: application/json
 
 {
   "pregunta": "¿Cómo me registro?"
+}
+
+### 3. Pregunta sobre cursos disponibles
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "¿Qué cursos tienen disponibles?"
+}
+
+### 4. Pregunta sobre videos
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "¿Hay videos sobre JavaScript?"
+}
+
+### 5. Pregunta sobre asignaturas
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "¿Qué puedo aprender en el curso de Desarrollo Web?"
+}
+
+### 6. Pregunta sobre quizzes
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "¿Cómo funcionan los quizzes?"
+}
+
+### 7. Pregunta sobre seguimiento de profesores
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "¿Puedo seguir a mis profesores favoritos?"
+}
+
+### 8. Pregunta compleja sobre recomendaciones
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "Soy principiante en programación, ¿qué me recomiendas estudiar primero?"
+}
+
+### 9. Pregunta sobre funcionalidades específicas
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "¿Puedo marcar partes importantes en los videos?"
+}
+
+### 10. Actualizar cache manualmente
+POST http://localhost:3001/api/ia/refresh
+Content-Type: application/json
+
+### 11. Ver estadísticas del servidor
+GET http://localhost:3001/api/ia/stats
+Content-Type: application/json
+
+### 12. Test de error (pregunta vacía)
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": ""
+}
+
+### 13. Test con pregunta muy específica
+POST http://localhost:3001/api/ia
+Content-Type: application/json
+
+{
+  "pregunta": "¿Cuántos estudiantes están registrados en la plataforma?"
 }
