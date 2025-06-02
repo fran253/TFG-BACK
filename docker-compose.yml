@@ -1,0 +1,26 @@
+services:
+  tfg-back:
+    build: .
+    container_name: tfg-back
+    ports:
+      - "5000:3000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:3000
+    networks:
+      - tfg-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: tfg-nginx
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - tfg-back
+    networks:
+      - tfg-network
+
+networks:
+  tfg-network:
