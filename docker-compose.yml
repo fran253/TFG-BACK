@@ -3,10 +3,10 @@ services:
     build: .
     container_name: tfg-back
     ports:
-      - "5000:3000"
+      - "5000:5190"  # Puerto externo:interno
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:3000
+      - ASPNETCORE_URLS=http://+:5190
     networks:
       - tfg-network
 
