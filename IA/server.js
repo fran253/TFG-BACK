@@ -7,7 +7,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000"], // Permitir frontend
+  origin: ["http://34.198.50.70:8080", "http://34.198.50.70:5000"], // Permitir frontend
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
