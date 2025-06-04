@@ -61,6 +61,15 @@ builder.Services.AddCors(options =>
     });
 });
 
+// ---------------------------- Configuración para proxy reverso (Load Balancer) ----------------------------
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+                               Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 // Opcionalmente, podemos agregar una autenticación básica si la necesitas
 builder.Services.AddAuthentication();
 
@@ -92,7 +101,6 @@ builder.Services.AddScoped<IPreguntaService, PreguntaService>();
 builder.Services.AddScoped<IRespuestaService, RespuestaService>();
 builder.Services.AddScoped<IQuizManagementService, QuizManagementService>();
 
-
 // RELACIONES
 builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
 
@@ -111,10 +119,20 @@ var app = builder.Build();
 
 app.Urls.Add("http://0.0.0.0:5190");
 
+// Configurar headers para proxy reverso ANTES de otros middlewares
+app.UseForwardedHeaders();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// COMENTAR O CONDICIONAR UseHttpsRedirection para Kubernetes
+// El Load Balancer se encarga de HTTPS, no la aplicación
+var environment = app.Environment.EnvironmentName;
+if (environment != "Production") // Solo redirigir en desarrollo
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseCors("AllowFrontend");
 
 // Debe ir antes de MapControllers para que funcione la autenticación/autorización
