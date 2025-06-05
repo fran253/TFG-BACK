@@ -1,12 +1,35 @@
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: tfg-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: bbddacademIQ
+      MYSQL_USER: academiq_user
+      MYSQL_PASSWORD: academiq_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d  # Para scripts de inicialización
+    networks:
+      - tfg-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
   tfg-back:
     build: .
     container_name: tfg-back
     ports:
-      - "5000:5190"  # Puerto externo:interno
+      - "5000:5190"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5190
+    depends_on:
+      mysql:
+        condition: service_healthy
     networks:
       - tfg-network
 
@@ -24,3 +47,8 @@ services:
 
 networks:
   tfg-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
