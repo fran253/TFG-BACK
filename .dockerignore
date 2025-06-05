@@ -1,0 +1,11 @@
+bin/
+obj/
+.git/
+.vs/
+.vscode/
+*.md
+.env
+Dockerfile
+.dockerignore
+docker-compose*.yml
+node_modules/
